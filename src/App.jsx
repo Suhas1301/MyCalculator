@@ -3,6 +3,7 @@ import { AppProvider, useApp } from './context/AppContext';
 import Sidebar from './components/Sidebar';
 import BasicCalculator from './modules/basic/BasicCalculator';
 import GraphingCalculator from './modules/graphing/GraphingCalculator';
+import AdvancedScientificCalculator from './modules/advanced-scientific/AdvancedScientificCalculator';
 import ChemistryCalculator from './modules/chemistry/ChemistryCalculator';
 import UnitConverter from './modules/converter/UnitConverter';
 import ProgrammerCalculator from './modules/programmer/ProgrammerCalculator';
@@ -26,6 +27,7 @@ function DashboardContent() {
   const renderActiveModule = () => {
     switch (activeModule) {
       case 'basic': return <BasicCalculator />;
+      case 'advanced-scientific': return <AdvancedScientificCalculator />;
       case 'graphing': return <GraphingCalculator />;
       case 'chemistry': return <ChemistryCalculator />;
       case 'converter': return <UnitConverter />;
@@ -130,34 +132,46 @@ function DashboardContent() {
                 </select>
               </div>
 
-              {/* Haptic trigger */}
+              {/* Angle mode readout moved to actual toggle */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: '1px solid var(--border-color)' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Keyboard Haptic Feedback</span>
-                <button
-                  onClick={() => updateSetting('keyboardHaptics', !settings.keyboardHaptics)}
-                  className="btn-glow"
-                  style={{
-                    padding: '4px 10px',
-                    fontSize: '0.72rem',
-                    fontWeight: 600,
-                    borderRadius: '6px',
-                    border: `1px solid ${settings.keyboardHaptics ? accentColor : 'var(--border-color)'}`,
-                    background: settings.keyboardHaptics ? `${accentColor}10` : 'transparent',
-                    color: settings.keyboardHaptics ? accentColor : 'var(--text-secondary)',
-                    cursor: 'pointer'
-                  }}
-                >
-                  {settings.keyboardHaptics ? 'ENABLED' : 'DISABLED'}
-                </button>
+                <span style={{ color: 'var(--text-secondary)' }}>Angle Measurement Unit</span>
+                <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.03)', padding: '2px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                  <button
+                    onClick={() => updateSetting('angleMode', 'deg')}
+                    style={{
+                      background: settings.angleMode === 'deg' ? accentColor : 'transparent',
+                      color: settings.angleMode === 'deg' ? '#000' : 'var(--text-secondary)',
+                      border: 'none',
+                      padding: '4px 10px',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      transition: 'all var(--transition-fast)'
+                    }}
+                  >
+                    DEG
+                  </button>
+                  <button
+                    onClick={() => updateSetting('angleMode', 'rad')}
+                    style={{
+                      background: settings.angleMode === 'rad' ? accentColor : 'transparent',
+                      color: settings.angleMode === 'rad' ? '#000' : 'var(--text-secondary)',
+                      border: 'none',
+                      padding: '4px 10px',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      transition: 'all var(--transition-fast)'
+                    }}
+                  >
+                    RAD
+                  </button>
+                </div>
               </div>
 
-              {/* Angle mode readout */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: '1px solid var(--border-color)' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Angle measurement unit</span>
-                <span style={{ textTransform: 'uppercase', fontWeight: 700, color: accentColor }}>
-                  {settings.angleMode}
-                </span>
-              </div>
+
             </div>
           </div>
         )}

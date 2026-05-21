@@ -70,7 +70,6 @@ export const AppProvider = ({ children }) => {
       angleMode: 'deg', // deg or rad
       decimalPlaces: 4,
       scientificNotation: false,
-      keyboardHaptics: true,
       glowIntensity: 'normal' // normal, high, off
     };
   });
@@ -154,6 +153,7 @@ export const AppProvider = ({ children }) => {
   const getAccentColor = (moduleId) => {
     switch (moduleId) {
       case 'basic': return 'var(--color-basic)';
+      case 'advanced-scientific': return 'var(--color-scientific)';
       case 'graphing': return 'var(--color-graphing)';
       case 'programmer': return 'var(--color-programmer)';
       case 'chemistry': return 'var(--color-chemistry)';

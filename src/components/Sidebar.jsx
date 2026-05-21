@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 
 const modules = [
-  { id: 'basic', name: 'Basic & Scientific', icon: Calculator, desc: 'Advanced Arithmetic & Functions' },
+  { id: 'basic', name: 'Basic & Scientific', icon: Calculator, desc: 'Standard Arithmetic & Functions' },
+  { id: 'advanced-scientific', name: 'Advanced Math Suite', icon: Sigma, desc: 'Matrix, Vector, Equation, Stat' },
   { id: 'graphing', name: 'Graphing Plotter', icon: LineChart, desc: 'Visualize Equations' },
   { id: 'chemistry', name: 'Chemistry & Periodic', icon: FlaskConical, desc: 'Molecules & Table' },
   { id: 'converter', name: 'Universal Converter', icon: Scale, desc: 'Units & Live Exchange' },

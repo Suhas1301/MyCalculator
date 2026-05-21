@@ -1,0 +1,125 @@
+.adv-sci-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 16px;
+  padding: 8px;
+  position: relative;
+}
+
+.mode-selector {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.mode-selector::-webkit-scrollbar {
+  height: 4px;
+}
+.mode-selector::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.mode-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-secondary);
+}
+
+.mode-btn.active {
+  background: var(--color-scientific-glow);
+  border-color: var(--color-scientific);
+  color: var(--color-scientific);
+}
+
+.matrix-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.matrix-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.matrix-input {
+  width: 50px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  text-align: center;
+  font-size: 1rem;
+  font-family: var(--font-mono);
+}
+
+.matrix-input:focus {
+  outline: none;
+  border-color: var(--color-scientific);
+  background: rgba(189, 0, 255, 0.1);
+}
+
+.stat-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stat-table th, .stat-table td {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: center;
+}
+
+.stat-table th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.stat-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #fff;
+  text-align: center;
+  font-family: var(--font-mono);
+  outline: none;
+}
+
+.eqn-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.result-panel {
+  background: rgba(189, 0, 255, 0.05);
+  border: 1px solid rgba(189, 0, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.result-panel h4 {
+  margin: 0 0 12px 0;
+  color: var(--color-scientific);
+  font-size: 0.85rem;
+}

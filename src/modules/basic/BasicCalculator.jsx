@@ -227,14 +227,84 @@ export default function BasicCalculator() {
   }, []);
 
   const handleSelectConstant = (symbol) => {
-    playHaptic();
-    setExpression(prev => prev + symbol);
+    insertAtCursor(symbol);
     if (!keepBookOpen) {
       setShowBookModal(false);
     }
   };
 
-  const displayRef = useRef(null);
+  const inputRef = useRef(null);
+
+  const insertAtCursor = (value) => {
+    if (!inputRef.current) {
+      setExpression(prev => prev + value);
+      return;
+    }
+    const start = inputRef.current.selectionStart || 0;
+    const end = inputRef.current.selectionEnd || 0;
+    
+    setExpression(prev => {
+      const updated = prev.slice(0, start) + value + prev.slice(end);
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.selectionStart = inputRef.current.selectionEnd = start + value.length;
+          inputRef.current.focus();
+        }
+      }, 0);
+      return updated;
+    });
+  };
+
+  const deleteAtCursor = () => {
+    if (!inputRef.current) {
+      setExpression(prev => prev.slice(0, -1));
+      return;
+    }
+    const start = inputRef.current.selectionStart || 0;
+    const end = inputRef.current.selectionEnd || 0;
+    
+    if (start !== end) {
+      setExpression(prev => {
+        const updated = prev.slice(0, start) + prev.slice(end);
+        setTimeout(() => {
+          if (inputRef.current) {
+            inputRef.current.selectionStart = inputRef.current.selectionEnd = start;
+            inputRef.current.focus();
+          }
+        }, 0);
+        return updated;
+      });
+      return;
+    }
+
+    if (start === 0) return;
+
+    setExpression(prev => {
+      const textBefore = prev.slice(0, start);
+      const textAfter = prev.slice(start);
+      
+      const tokens = ['sin(', 'cos(', 'tan(', 'asin(', 'acos(', 'atan(', 'sinh(', 'cosh(', 'tanh(', 'ln(', 'log10(', 'sqrt(', 'abs(', 'exp(', '10^('];
+      
+      let deletedLen = 1;
+      for (const token of tokens) {
+        if (textBefore.endsWith(token)) {
+          deletedLen = token.length;
+          break;
+        }
+      }
+      
+      const updated = textBefore.slice(0, -deletedLen) + textAfter;
+      const newPos = start - deletedLen;
+      
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.selectionStart = inputRef.current.selectionEnd = newPos;
+          inputRef.current.focus();
+        }
+      }, 0);
+      return updated;
+    });
+  };
 
   // Evaluate expression in real-time as the user types
   useEffect(() => {
@@ -265,15 +335,11 @@ export default function BasicCalculator() {
     }
   }, [expression, settings.angleMode, settings.decimalPlaces]);
 
-  // Haptic feedback mock
   const playHaptic = () => {
-    if (settings.keyboardHaptics && navigator.vibrate) {
-      navigator.vibrate(10);
-    }
+    // Kept as no-op to satisfy references without breaking things
   };
 
   const handleKeyPress = (value) => {
-    playHaptic();
     setError('');
     
     if (value === 'AC') {
@@ -281,11 +347,11 @@ export default function BasicCalculator() {
       setLivePreview('');
       setError('');
     } else if (value === 'DEL') {
-      setExpression(prev => prev.slice(0, -1));
+      deleteAtCursor();
     } else if (value === '=') {
       handleCalculate();
     } else {
-      setExpression(prev => prev + value);
+      insertAtCursor(value);
     }
   };
 
@@ -310,8 +376,7 @@ export default function BasicCalculator() {
 
   // Dynamic scientific constants insert
   const insertConstant = (symbol) => {
-    playHaptic();
-    setExpression(prev => prev + symbol);
+    insertAtCursor(symbol);
   };
 
   // Keyboard shortcut listener
@@ -425,52 +490,8 @@ export default function BasicCalculator() {
           <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>High-precision scientific parsing & calculation</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          {/* Angle Toggle Mode */}
-          <div 
-            style={{
-              display: 'flex',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '6px',
-              padding: '2px'
-            }}
-          >
-            <button
-              onClick={() => { playHaptic(); updateSetting('angleMode', 'deg'); }}
-              style={{
-                background: settings.angleMode === 'deg' ? accentColor : 'transparent',
-                color: settings.angleMode === 'deg' ? '#000' : 'var(--text-secondary)',
-                border: 'none',
-                padding: '4px 10px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                borderRadius: '4px',
-                cursor: 'pointer',
-                transition: 'all var(--transition-fast)'
-              }}
-            >
-              DEG
-            </button>
-            <button
-              onClick={() => { playHaptic(); updateSetting('angleMode', 'rad'); }}
-              style={{
-                background: settings.angleMode === 'rad' ? accentColor : 'transparent',
-                color: settings.angleMode === 'rad' ? '#000' : 'var(--text-secondary)',
-                border: 'none',
-                padding: '4px 10px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                borderRadius: '4px',
-                cursor: 'pointer',
-                transition: 'all var(--transition-fast)'
-              }}
-            >
-              RAD
-            </button>
-          </div>
-
           <button
-            onClick={() => { playHaptic(); setShowScientific(!showScientific); }}
+            onClick={() => { setShowScientific(!showScientific); }}
             style={{
               padding: '6px 12px',
               fontSize: '0.75rem',
@@ -488,7 +509,7 @@ export default function BasicCalculator() {
 
           {showScientific && (
             <button
-              onClick={() => { playHaptic(); setShowBookModal(true); }}
+              onClick={() => { setShowBookModal(true); }}
               style={{
                 padding: '6px 12px',
                 fontSize: '0.75rem',
@@ -535,23 +556,38 @@ export default function BasicCalculator() {
         <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '4px', background: accentColor }} />
         
         {/* Math Display Input */}
-        <div 
+        <input 
+          ref={inputRef}
+          type="text"
+          value={expression}
+          onChange={(e) => setExpression(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleCalculate();
+            } else if (e.key === 'Backspace') {
+              e.preventDefault();
+              deleteAtCursor();
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              handleKeyPress('AC');
+            }
+          }}
           className="math-mono"
-          ref={displayRef}
           style={{
             width: '100%',
             fontSize: expression.length > 18 ? '1.8rem' : '2.4rem',
             fontWeight: 500,
             textAlign: 'right',
             color: '#fff',
-            wordBreak: 'break-all',
-            overflowY: 'auto',
-            maxHeight: '80px',
-            lineHeight: 1.2
+            background: 'transparent',
+            border: 'none',
+            outline: 'none',
+            padding: 0
           }}
-        >
-          {expression || '0'}
-        </div>
+          placeholder="0"
+          spellCheck="false"
+        />
 
         {/* Real-time result preview or error readout */}
         {livePreview && (
