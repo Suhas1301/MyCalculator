@@ -1,0 +1,122 @@
+/* Theme variables and core design tokens for OmniCalc */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+:root {
+  /* Fonts */
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Fira Code', 'Courier New', Courier, monospace;
+
+  /* Theme Colors - Cyberpunk Dark Glassmorphism */
+  --bg-main: #06080d;
+  --bg-sidebar: rgba(10, 12, 22, 0.65);
+  --bg-card: rgba(16, 20, 35, 0.45);
+  --bg-card-hover: rgba(22, 28, 48, 0.6);
+  --bg-input: rgba(11, 14, 26, 0.8);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-glow: rgba(255, 255, 255, 0.15);
+  
+  /* Text states */
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-inverse: #06080d;
+
+  /* Glow / Shadows */
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-blur: blur(12px);
+
+  /* Module Specific Colors & Accent Gradients */
+  --color-basic: #00f0ff;          /* Electric Cyan */
+  --color-basic-gradient: linear-gradient(135deg, #00f0ff 0%, #0072ff 100%);
+  --color-basic-glow: rgba(0, 240, 255, 0.35);
+
+  --color-scientific: #bd00ff;     /* Neon Purple */
+  --color-scientific-gradient: linear-gradient(135deg, #bd00ff 0%, #7000ff 100%);
+  --color-scientific-glow: rgba(189, 0, 255, 0.35);
+
+  --color-graphing: #00ff66;       /* Emerald Green */
+  --color-graphing-gradient: linear-gradient(135deg, #00ff66 0%, #00aa50 100%);
+  --color-graphing-glow: rgba(0, 255, 102, 0.35);
+
+  --color-programmer: #ffd700;     /* Sunset Gold */
+  --color-programmer-gradient: linear-gradient(135deg, #ffd700 0%, #ff8800 100%);
+  --color-programmer-glow: rgba(255, 215, 0, 0.35);
+
+  --color-chemistry: #ff3366;      /* Bright Pink */
+  --color-chemistry-gradient: linear-gradient(135deg, #ff3366 0%, #ff0000 100%);
+  --color-chemistry-glow: rgba(255, 51, 102, 0.35);
+
+  --color-financial: #33fffc;      /* Turquoise */
+  --color-financial-gradient: linear-gradient(135deg, #33fffc 0%, #0099ff 100%);
+  --color-financial-glow: rgba(51, 255, 252, 0.35);
+
+  --color-engineering: #ff6b00;    /* Safety Orange */
+  --color-engineering-gradient: linear-gradient(135deg, #ff6b00 0%, #ff2a00 100%);
+  --color-engineering-glow: rgba(255, 107, 0, 0.35);
+
+  --color-datetime: #ff00ff;       /* Magenta */
+  --color-datetime-gradient: linear-gradient(135deg, #ff00ff 0%, #990099 100%);
+  --color-datetime-glow: rgba(255, 0, 255, 0.35);
+
+  --color-health: #00e5ff;         /* Ice Blue */
+  --color-health-gradient: linear-gradient(135deg, #00e5ff 0%, #0088cc 100%);
+  --color-health-glow: rgba(0, 229, 255, 0.35);
+
+  --color-ai: #ff00aa;             /* Hot Pink */
+  --color-ai-gradient: linear-gradient(135deg, #ff00aa 0%, #a200ff 100%);
+  --color-ai-glow: rgba(255, 0, 170, 0.35);
+
+  --color-education: #9dff00;      /* Lime */
+  --color-education-gradient: linear-gradient(135deg, #9dff00 0%, #5b9900 100%);
+  --color-education-glow: rgba(157, 255, 0, 0.35);
+  
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base custom animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; filter: brightness(1); }
+  50% { opacity: 0.8; filter: brightness(1.3); }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-up {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-fade {
+  animation: fade-in var(--transition-normal) forwards;
+}
+
+.animate-slide {
+  animation: slide-up var(--transition-normal) forwards;
+}
+
+.animate-scale {
+  animation: scale-up var(--transition-fast) forwards;
+}
