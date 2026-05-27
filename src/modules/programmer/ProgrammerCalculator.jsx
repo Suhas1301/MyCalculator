@@ -710,7 +710,7 @@ export default function ProgrammerCalculator() {
                       key={p.id}
                       onClick={() => loadRegexPreset(p.id)}
                       className="btn-glow"
-                      style={{ padding: '5px 10px', fontSize: '0.65rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '6px', color: 'var(--text-secondary)', cursor: 'pointer' }}
+                      style={{ padding: '5px 10px', fontSize: '0.65rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', color: '#fff', cursor: 'pointer' }}
                     >
                       {p.name}
                     </button>
@@ -1085,10 +1085,10 @@ export default function ProgrammerCalculator() {
                         padding: '6px 2px',
                         fontSize: '0.65rem',
                         fontWeight: 700,
-                        background: cipherMode === m.id ? `${accentColor}18` : 'rgba(255,255,255,0.02)',
-                        border: cipherMode === m.id ? `1px solid ${accentColor}40` : '1px solid rgba(255,255,255,0.05)',
-                        borderRadius: '6px',
-                        color: cipherMode === m.id ? '#fff' : 'var(--text-secondary)',
+                        background: cipherMode === m.id ? `${accentColor}20` : 'rgba(255,255,255,0.03)',
+                        border: `1px solid ${cipherMode === m.id ? accentColor : 'rgba(255,255,255,0.1)'}`,
+                        borderRadius: '20px',
+                        color: '#fff',
                         cursor: 'pointer'
                       }}
                     >

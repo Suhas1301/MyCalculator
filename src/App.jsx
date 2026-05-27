@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import Sidebar from './components/Sidebar';
 import BasicCalculator from './modules/basic/BasicCalculator';
@@ -14,15 +14,38 @@ import HealthCalculator from './modules/health/HealthCalculator';
 import AiSearchPanel from './modules/ai-search/AiSearchPanel';
 import EducationSuite from './modules/education/EducationSuite';
 import FormulaSearch from './modules/formulas/FormulaSearch';
-import { X, Trash2, Sliders, Check } from 'lucide-react';
+import { X, Trash2, Sliders, Check, ChevronDown, Search } from 'lucide-react';
+import { currencyDetails, getDisplayName, cryptoDetails, getCryptoDisplayName } from './utils/CurrencyData';
 
 function DashboardContent() {
-  const { activeModule, history, clearHistory, settings, updateSetting, getAccentColor } = useApp();
+  const { activeModule, history, clearHistory, settings, updateSetting, getAccentColor, currencyRates } = useApp();
   
   // Overlay draws states
   const [showSettings, setShowSettings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const accentColor = getAccentColor(activeModule);
+
+  // Custom Dropdown States for Settings
+  const [isOpenSettingsCurr, setIsOpenSettingsCurr] = useState(false);
+  const [searchSettingsCurr, setSearchSettingsCurr] = useState('');
+  const [isOpenSettingsCrypto, setIsOpenSettingsCrypto] = useState(false);
+  const [searchSettingsCrypto, setSearchSettingsCrypto] = useState('');
+
+  const settingsCurrRef = useRef(null);
+  const settingsCryptoRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (settingsCurrRef.current && !settingsCurrRef.current.contains(event.target)) {
+        setIsOpenSettingsCurr(false);
+      }
+      if (settingsCryptoRef.current && !settingsCryptoRef.current.contains(event.target)) {
+        setIsOpenSettingsCrypto(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const renderActiveModule = () => {
     switch (activeModule) {
@@ -45,6 +68,7 @@ function DashboardContent() {
 
   return (
     <div 
+      className="app-container"
       style={{
         display: 'flex',
         width: '100vw',
@@ -171,6 +195,132 @@ function DashboardContent() {
                 </div>
               </div>
 
+              {/* Default Currency Base */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingTop: '8px', borderTop: '1px solid var(--border-color)' }}>
+                <label style={{ color: 'var(--text-secondary)' }}>Default Currency Base</label>
+                <div ref={settingsCurrRef} style={{ position: 'relative', width: '100%' }}>
+                  <button
+                    onClick={() => setIsOpenSettingsCurr(!isOpenSettingsCurr)}
+                    className="glass-input"
+                    style={{
+                      width: '100%', cursor: 'pointer', fontSize: '0.88rem', display: 'flex',
+                      alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px',
+                      background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <div style={{ flex: 1, overflow: 'hidden' }}>
+                      {getDisplayName(settings.defaultCurrencyBase || 'USD')}
+                    </div>
+                    <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
+                  </button>
+                  {isOpenSettingsCurr && (
+                    <div className="glass-panel" style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '6px',
+                      background: 'rgba(10, 12, 22, 0.96)', backdropFilter: 'blur(16px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', maxHeight: '200px',
+                      overflowY: 'auto', zIndex: 100, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
+                        <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
+                        <input
+                          type="text" placeholder="Search currency..." value={searchSettingsCurr} onChange={(e) => setSearchSettingsCurr(e.target.value)}
+                          className="glass-input" style={{ flex: 1, fontSize: '0.8rem', padding: '4px 8px', background: 'rgba(255,255,255,0.02)', border: 'none', outline: 'none' }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
+                        {Object.keys(currencyRates || {})
+                          .filter(c => currencyDetails[c] !== undefined)
+                          .filter(c => {
+                            const details = currencyDetails[c];
+                            const query = searchSettingsCurr.toLowerCase();
+                            if (!query) return true;
+                            if (c.toLowerCase().includes(query)) return true;
+                            return details && (details.country.toLowerCase().includes(query) || details.name.toLowerCase().includes(query));
+                          }).map(c => {
+                            const isSel = (settings.defaultCurrencyBase || 'USD') === c;
+                            const details = currencyDetails[c];
+                            return (
+                              <button key={c} onClick={() => { updateSetting('defaultCurrencyBase', c); setIsOpenSettingsCurr(false); setSearchSettingsCurr(''); }}
+                                style={{
+                                  padding: '8px 12px', background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent', border: 'none',
+                                  color: isSel ? accentColor : '#fff', fontSize: '0.82rem', textAlign: 'left', cursor: 'pointer',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all var(--transition-fast)'
+                                }} className="btn-glow">
+                                <div style={{ flex: 1, overflow: 'hidden' }}>{getDisplayName(c)}</div>
+                                {details && <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{details.symbol}</span>}
+                              </button>
+                            );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Default Crypto Base */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingTop: '8px', borderTop: '1px solid var(--border-color)' }}>
+                <label style={{ color: 'var(--text-secondary)' }}>Default Crypto Base</label>
+                <div ref={settingsCryptoRef} style={{ position: 'relative', width: '100%' }}>
+                  <button
+                    onClick={() => setIsOpenSettingsCrypto(!isOpenSettingsCrypto)}
+                    className="glass-input"
+                    style={{
+                      width: '100%', cursor: 'pointer', fontSize: '0.88rem', display: 'flex',
+                      alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px',
+                      background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <div style={{ flex: 1, overflow: 'hidden' }}>
+                      {getCryptoDisplayName(settings.defaultCryptoBase || 'BTC')}
+                    </div>
+                    <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
+                  </button>
+                  {isOpenSettingsCrypto && (
+                    <div className="glass-panel" style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '6px',
+                      background: 'rgba(10, 12, 22, 0.96)', backdropFilter: 'blur(16px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', maxHeight: '200px',
+                      overflowY: 'auto', zIndex: 100, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
+                        <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
+                        <input
+                          type="text" placeholder="Search crypto..." value={searchSettingsCrypto} onChange={(e) => setSearchSettingsCrypto(e.target.value)}
+                          className="glass-input" style={{ flex: 1, fontSize: '0.8rem', padding: '4px 8px', background: 'rgba(255,255,255,0.02)', border: 'none', outline: 'none' }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
+                        {Object.keys(cryptoDetails)
+                          .filter(c => {
+                            const details = cryptoDetails[c];
+                            const query = searchSettingsCrypto.toLowerCase();
+                            if (!query) return true;
+                            if (c.toLowerCase().includes(query)) return true;
+                            return details && (details.name.toLowerCase().includes(query));
+                          }).map(c => {
+                            const isSel = (settings.defaultCryptoBase || 'BTC') === c;
+                            const details = cryptoDetails[c];
+                            return (
+                              <button key={c} onClick={() => { updateSetting('defaultCryptoBase', c); setIsOpenSettingsCrypto(false); setSearchSettingsCrypto(''); }}
+                                style={{
+                                  padding: '8px 12px', background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent', border: 'none',
+                                  color: isSel ? accentColor : '#fff', fontSize: '0.82rem', textAlign: 'left', cursor: 'pointer',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all var(--transition-fast)'
+                                }} className="btn-glow">
+                                <div style={{ flex: 1, overflow: 'hidden' }}>{getCryptoDisplayName(c)}</div>
+                                {details && <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{details.symbol}</span>}
+                              </button>
+                            );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
 
             </div>
           </div>

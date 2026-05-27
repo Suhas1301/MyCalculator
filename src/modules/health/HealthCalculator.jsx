@@ -234,7 +234,7 @@ export default function HealthCalculator() {
         >
           <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', margin: 0 }}>Configure Parameters</h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+          <div className="grid-mobile-1fr" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '14px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Weight (kg)</label>
               <input
@@ -280,7 +280,7 @@ export default function HealthCalculator() {
                   </select>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', gridColumn: 'span 2' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', gridColumn: '1 / -1' }}>
                   <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Active Lifestyle Scale</label>
                   <select
                     value={activity}

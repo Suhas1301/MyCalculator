@@ -447,7 +447,7 @@ function ShellDiagram({ shells, color, atomicNumber }) {
           <stop offset="0%" stopColor="#fff" stopOpacity="0.9" />
           <stop offset="100%" stopColor={color} stopOpacity="1" />
         </radialGradient>
-        <filter id={`glow${atomicNumber}`}>
+        <filter id={`glow${atomicNumber}`} x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="2" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
@@ -461,15 +461,31 @@ function ShellDiagram({ shells, color, atomicNumber }) {
       {shells.map((count, si) => {
         const r = radii[si] || 124 + si * 18;
         const visual = Math.min(count, MAX_VISUAL);
-        return Array.from({ length: visual }, (_, ei) => {
-          const angle = (2 * Math.PI * ei) / visual - Math.PI / 2;
-          const ex = cx + r * Math.cos(angle);
-          const ey = cy + r * Math.sin(angle);
-          return (
-            <circle key={`e-${si}-${ei}`} cx={ex} cy={ey} r={3.2}
-              fill={color} opacity={0.88} filter={`url(#glow${atomicNumber})`} />
-          );
-        });
+        // Duration based on shell index, alternating direction
+        const duration = 12 + si * 4; 
+        const dir = si % 2 === 0 ? 360 : -360;
+        
+        return (
+          <g key={`shell-group-${si}`}>
+            <animateTransform 
+              attributeName="transform" 
+              type="rotate" 
+              from={`0 ${cx} ${cy}`} 
+              to={`${dir} ${cx} ${cy}`} 
+              dur={`${duration}s`} 
+              repeatCount="indefinite" 
+            />
+            {Array.from({ length: visual }, (_, ei) => {
+              const angle = (2 * Math.PI * ei) / visual - Math.PI / 2;
+              const ex = cx + r * Math.cos(angle);
+              const ey = cy + r * Math.sin(angle);
+              return (
+                <circle key={`e-${si}-${ei}`} cx={ex} cy={ey} r={3.2}
+                  fill={color} opacity={0.88} filter={`url(#glow${atomicNumber})`} />
+              );
+            })}
+          </g>
+        );
       })}
       {/* Nucleus */}
       <circle cx={cx} cy={cy} r={13} fill={`url(#nucGrad${atomicNumber})`} opacity={0.95} />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ArrowLeftRight, Coins, Ruler, Scale, Flame, RefreshCw, Search, ChevronDown, Grid, Box, Gauge, Zap, Sun, Thermometer, DollarSign, Bitcoin, Banknote } from 'lucide-react';
-import { currencyDetails, getDisplayName } from '../../utils/CurrencyData';
+import { currencyDetails, getDisplayName, getCryptoDisplayName, cryptoDetails } from '../../utils/CurrencyData';
 
 const converterUnits = {
   length: {
@@ -126,30 +126,10 @@ const converterUnits = {
 
 
 
-const cryptoDetails = {
-  BTC: { name: 'Bitcoin', symbol: '₿' },
-  ETH: { name: 'Ethereum', symbol: 'Ξ' },
-  SOL: { name: 'Solana', symbol: 'SOL' },
-  BNB: { name: 'Binance Coin', symbol: 'BNB' },
-  XRP: { name: 'Ripple', symbol: 'XRP' },
-  ADA: { name: 'Cardano', symbol: 'ADA' },
-  DOGE: { name: 'Dogecoin', symbol: 'Ð' },
-  LTC: { name: 'Litecoin', symbol: 'Ł' },
-  USDT: { name: 'Tether Stablecoin', symbol: '₮' },
-  USD: { name: 'US Dollar', symbol: '$' }
-};
 
-
-const getCryptoDisplayName = (code) => {
-  const details = cryptoDetails[code];
-  if (details) {
-    return `${details.name} (${code})`;
-  }
-  return `${code} (${code})`;
-};
 
 export default function UnitConverter() {
-  const { currencyRates, isCurrencyLoading, getAccentColor } = useApp();
+  const { currencyRates, isCurrencyLoading, getAccentColor, settings } = useApp();
   const accentColor = getAccentColor('converter');
 
   const [activeCategory, setActiveCategory] = useState('length'); // length, weight, speed, digital, currency, temperature
@@ -166,11 +146,11 @@ export default function UnitConverter() {
   const [unitToIndex, setUnitToIndex] = useState(1);
   
   // Currency units selectors
-  const [curFrom, setCurFrom] = useState('USD');
+  const [curFrom, setCurFrom] = useState(settings?.defaultCurrencyBase || 'USD');
   const [curTo, setCurTo] = useState('EUR');
 
   // Crypto units selectors
-  const [cryptoFrom, setCryptoFrom] = useState('BTC');
+  const [cryptoFrom, setCryptoFrom] = useState(settings?.defaultCryptoBase || 'BTC');
   const [cryptoTo, setCryptoTo] = useState('USD');
 
   // Temp units selectors

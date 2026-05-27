@@ -4,7 +4,7 @@ import { Landmark, TrendingUp, DollarSign, Percent, Calendar, Coins, ArrowRightL
 import { currencyDetails, getDisplayName } from '../../utils/CurrencyData';
 
 export default function FinancialCalculator() {
-  const { getAccentColor, currencyRates, isCurrencyLoading } = useApp();
+  const { getAccentColor, currencyRates, isCurrencyLoading, settings } = useApp();
   const accentColor = getAccentColor('financial');
 
   const [activeTab, setActiveTab] = useState('loan'); // loan, sip, compound, currency
@@ -27,7 +27,7 @@ export default function FinancialCalculator() {
   const [compFreq, setCompFreq] = useState(12); // compounding per year (12 = monthly, 4 = quarterly, 1 = annually)
 
   // Currency Converter inputs
-  const [currFrom, setCurrFrom] = useState('USD');
+  const [currFrom, setCurrFrom] = useState(settings?.defaultCurrencyBase || 'USD');
   const [currTo, setCurrTo] = useState('EUR');
   const [currAmount, setCurrAmount] = useState(1000);
 

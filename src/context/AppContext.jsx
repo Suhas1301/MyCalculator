@@ -70,7 +70,9 @@ export const AppProvider = ({ children }) => {
       angleMode: 'deg', // deg or rad
       decimalPlaces: 4,
       scientificNotation: false,
-      glowIntensity: 'normal' // normal, high, off
+      glowIntensity: 'normal', // normal, high, off
+      defaultCurrencyBase: 'USD',
+      defaultCryptoBase: 'BTC'
     };
   });
 
@@ -98,18 +100,40 @@ export const AppProvider = ({ children }) => {
         const res = await fetch('https://open.er-api.com/v6/latest/USD');
         const data = await res.json();
         if (data && data.rates) {
+          // Fetch live cryptocurrency rates from CoinGecko
+          let cryptoRates = {};
+          try {
+            const cgRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano,dogecoin,litecoin,tether&vs_currencies=usd');
+            const cgData = await cgRes.json();
+            if (cgData && cgData.bitcoin) {
+              cryptoRates = {
+                BTC: cgData.bitcoin?.usd ? 1 / cgData.bitcoin.usd : null,
+                ETH: cgData.ethereum?.usd ? 1 / cgData.ethereum.usd : null,
+                SOL: cgData.solana?.usd ? 1 / cgData.solana.usd : null,
+                BNB: cgData.binancecoin?.usd ? 1 / cgData.binancecoin.usd : null,
+                XRP: cgData.ripple?.usd ? 1 / cgData.ripple.usd : null,
+                ADA: cgData.cardano?.usd ? 1 / cgData.cardano.usd : null,
+                DOGE: cgData.dogecoin?.usd ? 1 / cgData.dogecoin.usd : null,
+                LTC: cgData.litecoin?.usd ? 1 / cgData.litecoin.usd : null,
+                USDT: cgData.tether?.usd ? 1 / cgData.tether.usd : null
+              };
+            }
+          } catch (cryptoErr) {
+            console.warn("Could not fetch live crypto rates, using fallbacks.", cryptoErr);
+          }
+
           const rates = {
             ...data.rates,
             USD: 1.0,
-            BTC: data.rates.BTC || 1 / 67000,
-            ETH: data.rates.ETH || 1 / 3400,
-            SOL: data.rates.SOL || 1 / 160,
-            BNB: data.rates.BNB || 1 / 580,
-            XRP: data.rates.XRP || 1 / 0.50,
-            ADA: data.rates.ADA || 1 / 0.45,
-            DOGE: data.rates.DOGE || 1 / 0.15,
-            LTC: data.rates.LTC || 1 / 80,
-            USDT: data.rates.USDT || 1.0
+            BTC: cryptoRates.BTC || data.rates.BTC || 1 / 67000,
+            ETH: cryptoRates.ETH || data.rates.ETH || 1 / 3400,
+            SOL: cryptoRates.SOL || data.rates.SOL || 1 / 160,
+            BNB: cryptoRates.BNB || data.rates.BNB || 1 / 580,
+            XRP: cryptoRates.XRP || data.rates.XRP || 1 / 0.50,
+            ADA: cryptoRates.ADA || data.rates.ADA || 1 / 0.45,
+            DOGE: cryptoRates.DOGE || data.rates.DOGE || 1 / 0.15,
+            LTC: cryptoRates.LTC || data.rates.LTC || 1 / 80,
+            USDT: cryptoRates.USDT || data.rates.USDT || 1.0
           };
           setCurrencyRates(rates);
         }

@@ -131,6 +131,8 @@ input[type="number"] {
   outline: none;
   font-size: 0.95rem;
   transition: all var(--transition-fast);
+  width: 100%;
+  min-width: 0;
 }
 
 .glass-input:focus {
@@ -208,4 +210,103 @@ input[type="number"] {
 ::selection {
   background: rgba(255, 255, 255, 0.15);
   color: var(--text-primary);
+}
+
+/* ========================================================================== */
+/* RESPONSIVE DESIGN - MOBILE & TABLET ADAPTATIONS                            */
+/* ========================================================================== */
+
+@media (max-width: 1024px) {
+  /* Main wrapper stacking */
+  .app-container {
+    flex-direction: column !important;
+  }
+  
+  /* Sidebar responsive bottom nav style */
+  .sidebar-container {
+    width: calc(100% - 24px) !important;
+    height: 70px !important;
+    margin: 12px 12px 0 12px !important;
+    flex-direction: row !important;
+    padding: 0 10px !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+  }
+  
+  /* Hide the huge brand header */
+  .sidebar-header {
+    display: none !important;
+  }
+  
+  /* Buttons container inside sidebar */
+  .sidebar-container nav,
+  .sidebar-container > div:last-child {
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    height: 100% !important;
+    padding: 0 !important;
+    align-items: center !important;
+    border: none !important;
+  }
+  
+  /* Hide scrollbar on the horizontal nav */
+  .sidebar-container nav::-webkit-scrollbar,
+  .sidebar-container > div:last-child::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  .sidebar-container button {
+    min-width: 50px !important;
+    width: 50px !important;
+    height: 50px !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 5px !important;
+    padding: 5px !important;
+    gap: 0 !important;
+  }
+  
+  /* Hide text, show only icons in the bottom nav */
+  .sidebar-container button > div:has(span),
+  .sidebar-container button span, 
+  .sidebar-container button p {
+    display: none !important;
+  }
+
+  /* Main content adjusts height */
+  main.glass-panel {
+    margin: 12px !important;
+    height: calc(100vh - 94px) !important;
+    overflow-y: auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Override dynamic flex layouts */
+  div[style*="1fr 360px"],
+  div[style*="1fr 340px"],
+  div[style*="1fr 320px"],
+  div[style*="1fr 300px"],
+  div[style*="240px 1fr"],
+  .grid-mobile-1fr {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+  }
+  
+  /* Ensure column content stacks correctly */
+  div[style*="1fr 360px"] > div,
+  div[style*="1fr 340px"] > div,
+  div[style*="1fr 320px"] > div,
+  div[style*="1fr 300px"] > div,
+  div[style*="240px 1fr"] > div {
+    max-height: none !important;
+  }
+
+  /* Make settings overlay full width */
+  .glass-panel.animate-scale {
+    width: calc(100% - 48px) !important;
+    right: 24px !important;
+  }
 }

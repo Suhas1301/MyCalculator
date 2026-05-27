@@ -63,9 +63,56 @@ export const getDisplayName = (code) => {
           src={`https://flagcdn.com/w20/${isoCode}.png`} 
           width="20" 
           alt={details.country}
-          style={{ borderRadius: '2px', boxShadow: '0 0 4px rgba(0,0,0,0.3)' }}
+          style={{ borderRadius: '2px', boxShadow: '0 0 4px rgba(0,0,0,0.3)', flexShrink: 0 }}
         />
-        <span>{details.country} ({code})</span>
+        <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+          {details.country} ({code})
+        </span>
+      </div>
+    );
+  }
+  return <span>{code} ({code})</span>;
+};
+
+export const cryptoDetails = {
+  BTC: { name: 'Bitcoin', symbol: '₿' },
+  ETH: { name: 'Ethereum', symbol: 'Ξ' },
+  SOL: { name: 'Solana', symbol: 'SOL' },
+  BNB: { name: 'Binance Coin', symbol: 'BNB' },
+  XRP: { name: 'Ripple', symbol: 'XRP' },
+  ADA: { name: 'Cardano', symbol: 'ADA' },
+  DOGE: { name: 'Dogecoin', symbol: 'Ð' },
+  LTC: { name: 'Litecoin', symbol: 'Ł' },
+  USDT: { name: 'Tether Stablecoin', symbol: '₮' },
+  USD: { name: 'US Dollar', symbol: '$' }
+};
+
+export const getCryptoDisplayName = (code) => {
+  const details = cryptoDetails[code];
+  if (details) {
+    const iconCode = code.toLowerCase();
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {code === 'USD' ? (
+          <img 
+            src={`https://flagcdn.com/w20/us.png`} 
+            width="20" 
+            alt="US Dollar"
+            style={{ borderRadius: '2px', boxShadow: '0 0 4px rgba(0,0,0,0.3)', flexShrink: 0 }}
+          />
+        ) : (
+          <img 
+            src={`https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/${iconCode}.svg`} 
+            width="20" 
+            height="20"
+            alt={details.name}
+            style={{ flexShrink: 0 }}
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        )}
+        <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+          {details.name} ({code})
+        </span>
       </div>
     );
   }
