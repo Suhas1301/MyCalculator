@@ -8,23 +8,19 @@
 }
 
 .mode-selector {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-
-.mode-selector::-webkit-scrollbar {
-  height: 4px;
-}
-.mode-selector::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  width: 100%;
 }
 
 .mode-btn {
   padding: 6px 12px;
-  border-radius: 8px;
+  border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -33,6 +29,8 @@
   border: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.02);
   color: var(--text-secondary);
+  justify-content: center;
+  width: 100%;
 }
 
 .mode-btn.active {

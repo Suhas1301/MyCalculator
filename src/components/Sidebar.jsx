@@ -22,9 +22,9 @@ import {
 const modules = [
   { id: 'basic', name: 'Basic & Scientific', icon: Calculator, desc: 'Standard Arithmetic & Functions' },
   { id: 'advanced-scientific', name: 'Advanced Math Suite', icon: Sigma, desc: 'Matrix, Vector, Equation, Stat' },
-  { id: 'graphing', name: 'Graphing Plotter', icon: LineChart, desc: 'Visualize Equations' },
+  { id: 'graphing', name: 'Graph Plotter', icon: LineChart, desc: 'Visualize Equations' },
   { id: 'chemistry', name: 'Chemistry & Periodic', icon: FlaskConical, desc: 'Molecules & Table' },
-  { id: 'converter', name: 'Universal Converter', icon: Scale, desc: 'Units & Live Exchange' },
+  { id: 'converter', name: 'Unit Converter', icon: Scale, desc: 'Units & Live Exchange' },
   { id: 'programmer', name: 'Programmer', icon: Binary, desc: 'Bases & Bitwise' },
   { id: 'financial', name: 'Financial suite', icon: TrendingUp, desc: 'EMI, SIP & Loan' },
   { id: 'engineering', name: 'Engineering & Physics', icon: Zap, desc: 'Circuitry & Formulas' },

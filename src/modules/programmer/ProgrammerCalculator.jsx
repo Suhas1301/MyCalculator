@@ -5,12 +5,12 @@ import { Binary, Cpu, Copy, Check, Lock, Shield, Code, Repeat } from 'lucide-rea
 export default function ProgrammerCalculator() {
   const { getAccentColor } = useApp();
   const accentColor = getAccentColor('programmer');
-  
+
   // Tab control state: base, regex, password, rot13
   const [activeTab, setActiveTab] = useState('regex');
 
   // ─── TAB 1: BASE CONVERTER STATE ──────────────────────────────────────────
-  const [val, setVal] = useState(42); 
+  const [val, setVal] = useState(42);
   const [inputs, setInputs] = useState({
     DEC: '42',
     HEX: '2A',
@@ -31,7 +31,7 @@ export default function ProgrammerCalculator() {
   const handleInputChange = (text, base) => {
     let sanitized = text;
     let baseVal = 10;
-    
+
     if (base === 'DEC') {
       sanitized = text.replace(/[^0-9]/g, '');
       baseVal = 10;
@@ -86,7 +86,7 @@ export default function ProgrammerCalculator() {
       for (let i = 7; i >= 0; i--) {
         const bitIdx = b * 8 + i;
         const isSet = (val & (1 << bitIdx)) !== 0;
-        
+
         bitRow.push(
           <div
             key={bitIdx}
@@ -115,16 +115,16 @@ export default function ProgrammerCalculator() {
           </div>
         );
       }
-      
+
       bytes.push(
-        <div 
-          key={b} 
-          style={{ 
-            display: 'flex', 
-            gap: '3px', 
-            padding: '8px', 
-            background: 'rgba(255,255,255,0.01)', 
-            borderRadius: '6px', 
+        <div
+          key={b}
+          style={{
+            display: 'flex',
+            gap: '3px',
+            padding: '8px',
+            background: 'rgba(255,255,255,0.01)',
+            borderRadius: '6px',
             border: '1px solid rgba(255,255,255,0.02)'
           }}
         >
@@ -212,7 +212,7 @@ export default function ProgrammerCalculator() {
       const regex = new RegExp(regexPattern, flags);
       const matches = [];
       let match;
-      
+
       if (globalFlag) {
         regex.lastIndex = 0;
         let safety = 0;
@@ -251,7 +251,7 @@ export default function ProgrammerCalculator() {
     try {
       const flags = (globalFlag ? 'g' : '') + (caseFlag ? 'i' : '') + (multilineFlag ? 'm' : '');
       const regex = new RegExp(regexPattern, flags);
-      
+
       if (!globalFlag) {
         const match = regex.exec(testText);
         if (!match) return testText;
@@ -267,38 +267,38 @@ export default function ProgrammerCalculator() {
           </>
         );
       }
-      
+
       const elements = [];
       let lastIndex = 0;
       let match;
       let safety = 0;
       regex.lastIndex = 0;
-      
+
       while ((match = regex.exec(testText)) !== null && safety < 1000) {
         safety++;
         const start = match.index;
         const end = start + match[0].length;
-        
+
         if (start > lastIndex) {
           elements.push(testText.slice(lastIndex, start));
         }
-        
+
         elements.push(
           <mark key={`m-${start}-${safety}`} style={{ background: 'rgba(0,255,102,0.22)', color: '#00ff66', border: '1px solid rgba(0,255,102,0.4)', borderRadius: '3px', padding: '1px 2px', textShadow: '0 0 8px rgba(0,255,102,0.3)', margin: '0 1px' }}>
             {match[0]}
           </mark>
         );
-        
+
         lastIndex = end;
         if (match[0].length === 0) {
           regex.lastIndex++;
         }
       }
-      
+
       if (lastIndex < testText.length) {
         elements.push(testText.slice(lastIndex));
       }
-      
+
       return elements.length > 0 ? elements : testText;
     } catch (e) {
       return testText;
@@ -329,31 +329,31 @@ export default function ProgrammerCalculator() {
     const lower = 'abcdefghijklmnopqrstuvwxyz';
     const numbers = '0123456789';
     const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    
+
     if (includeUpper) pool += upper;
     if (includeLower) pool += lower;
     if (includeNumbers) pool += numbers;
     if (includeSymbols) pool += symbols;
-    
+
     if (excludeSimilar) {
       const sim = /[ilI1o0O\|]/g;
       pool = pool.replace(sim, '');
     }
-    
+
     if (excludeSpecific) {
       for (const c of excludeSpecific) {
         pool = pool.split(c).join('');
       }
     }
-    
+
     if (pool.length === 0) {
       setPassword('Select character sets');
       return;
     }
-    
+
     let generated = '';
     const cryptoObj = window.crypto || window.msCrypto;
-    
+
     if (cryptoObj) {
       const array = new Uint32Array(pwdLength);
       cryptoObj.getRandomValues(array);
@@ -365,7 +365,7 @@ export default function ProgrammerCalculator() {
         generated += pool[Math.floor(Math.random() * pool.length)];
       }
     }
-    
+
     setPassword(generated);
   };
 
@@ -389,7 +389,7 @@ export default function ProgrammerCalculator() {
     if (includeSymbols) poolSize += 26;
     if (excludeSimilar) poolSize -= 7;
     if (excludeSpecific) poolSize = Math.max(1, poolSize - excludeSpecific.length);
-    
+
     if (poolSize <= 0) return 0;
     const entropy = pwdLength * Math.log2(poolSize);
     return Math.round(entropy);
@@ -412,13 +412,13 @@ export default function ProgrammerCalculator() {
       let color = '#fff';
       let shadow = 'none';
       if (/[0-9]/.test(char)) {
-        color = '#fbbf24'; 
+        color = '#fbbf24';
         shadow = 'rgba(251,191,36,0.2)';
       } else if (/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(char)) {
-        color = '#ff3366'; 
+        color = '#ff3366';
         shadow = 'rgba(255,51,102,0.2)';
       } else if (/[a-z]/.test(char)) {
-        color = '#38bdf8'; 
+        color = '#38bdf8';
       }
       return (
         <span key={i} style={{ color, textShadow: shadow !== 'none' ? `0 0 6px ${shadow}` : 'none', fontWeight: 700 }}>
@@ -436,14 +436,14 @@ export default function ProgrammerCalculator() {
 
   const runCipher = (text) => {
     if (!text) return '';
-    
+
     if (cipherMode === 'rot13') {
       return text.replace(/[a-zA-Z]/g, (c) => {
         const base = c <= 'Z' ? 65 : 97;
         return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
       });
     }
-    
+
     if (cipherMode === 'rot18') {
       return text.replace(/[a-zA-Z0-9]/g, (c) => {
         if (/[0-9]/.test(c)) {
@@ -453,7 +453,7 @@ export default function ProgrammerCalculator() {
         return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
       });
     }
-    
+
     if (cipherMode === 'rot47') {
       return text.split('').map((char) => {
         const code = char.charCodeAt(0);
@@ -463,14 +463,14 @@ export default function ProgrammerCalculator() {
         return char;
       }).join('');
     }
-    
+
     if (cipherMode === 'caesar') {
       return text.replace(/[a-zA-Z]/g, (c) => {
         const base = c <= 'Z' ? 65 : 97;
         return String.fromCharCode(((c.charCodeAt(0) - base + cipherShift) % 26) + base);
       });
     }
-    
+
     return text;
   };
 
@@ -487,7 +487,7 @@ export default function ProgrammerCalculator() {
   };
 
   return (
-    <div 
+    <div
       className="animate-slide"
       style={{
         display: 'flex',
@@ -513,14 +513,14 @@ export default function ProgrammerCalculator() {
         padding: '6px',
         background: 'rgba(255, 255, 255, 0.02)',
         border: '1px solid rgba(255, 255, 255, 0.05)',
-        borderRadius: '12px',
+        borderRadius: '20px',
         width: '100%'
       }}>
         {[
-          { id: 'base', name: 'Base & Flip Grid', icon: <Binary size={14} /> },
-          { id: 'regex', name: 'Regex Builder', icon: <Code size={14} /> },
-          { id: 'password', name: 'Password Gen', icon: <Lock size={14} /> },
-          { id: 'rot13', name: 'ROT13 & Caesar', icon: <Repeat size={14} /> }
+          { id: 'base', name: 'Base & Flip Grid', icon: <Binary size={14} />, color: '#3b82f6' },
+          { id: 'regex', name: 'Regex Builder', icon: <Code size={14} />, color: '#10b981' },
+          { id: 'password', name: 'Password Gen', icon: <Lock size={14} />, color: '#f59e0b' },
+          { id: 'rot13', name: 'ROT13 & Caesar', icon: <Repeat size={14} />, color: '#8b5cf6' }
         ].map((tab) => {
           const isActive = activeTab === tab.id;
           return (
@@ -533,21 +533,23 @@ export default function ProgrammerCalculator() {
                 justifyContent: 'center',
                 gap: '8px',
                 padding: '10px 16px',
-                background: isActive ? `${accentColor}18` : 'transparent',
-                border: isActive ? `1px solid ${accentColor}40` : '1px solid transparent',
-                borderRadius: '8px',
+                background: isActive ? `${accentColor}26` : 'rgba(255, 255, 255, 0.02)',
+                border: isActive ? `1px solid ${accentColor}` : '1px solid var(--border-color)',
+                borderRadius: '20px',
                 color: isActive ? '#fff' : 'var(--text-secondary)',
                 fontSize: '0.8rem',
-                fontWeight: isActive ? 600 : 500,
+                fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 whiteSpace: 'nowrap',
-                boxShadow: isActive ? `0 0 12px ${accentColor}20` : 'none',
+                boxShadow: isActive ? `0 0 12px ${accentColor}40` : 'none',
                 width: '100%'
               }}
               className="btn-glow"
             >
-              {tab.icon}
+              <span style={{ color: isActive ? accentColor : 'rgba(255, 255, 255, 0.4)', display: 'inline-flex', alignItems: 'center' }}>
+                {tab.icon}
+              </span>
               {tab.name}
             </button>
           );
@@ -556,7 +558,7 @@ export default function ProgrammerCalculator() {
 
       {/* Tab Contents */}
       {activeTab === 'base' && (
-        <div 
+        <div
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 340px',
@@ -568,7 +570,7 @@ export default function ProgrammerCalculator() {
           {/* Left: Base values */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {/* Synchronized Inputs */}
-            <div 
+            <div
               className="glass-panel"
               style={{
                 padding: '20px',
@@ -594,7 +596,7 @@ export default function ProgrammerCalculator() {
             </div>
 
             {/* Interactive registers flip grid */}
-            <div 
+            <div
               className="glass-panel"
               style={{
                 padding: '16px',
@@ -618,7 +620,7 @@ export default function ProgrammerCalculator() {
           </div>
 
           {/* Right: Bitwise logic */}
-          <div 
+          <div
             className="glass-panel"
             style={{
               padding: '16px',
@@ -672,7 +674,7 @@ export default function ProgrammerCalculator() {
       )}
 
       {activeTab === 'regex' && (
-        <div 
+        <div
           style={{
             display: 'grid',
             gridTemplateColumns: '1.1fr 1fr',
@@ -719,7 +721,7 @@ export default function ProgrammerCalculator() {
               {/* Dynamic rule helpers */}
               <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Rule Assembly Helpers</span>
-                
+
                 {/* Prefix/Suffix */}
                 <div style={{ display: 'flex', gap: '14px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
@@ -793,7 +795,7 @@ export default function ProgrammerCalculator() {
           {/* Right: Active pattern display, Live Playground, Highlights */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div className="glass-panel" style={{ padding: '16px', background: 'rgba(16,20,35,0.4)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              
+
               {/* Regex output string */}
               <div style={{ background: 'rgba(5,7,12,0.4)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
                 <div style={{ display: 'flex', justifycontent: 'space-between', alignItems: 'center' }}>
@@ -813,7 +815,7 @@ export default function ProgrammerCalculator() {
                     style={{ flex: 1, background: 'transparent', border: 'none', color: '#fff', fontSize: '1rem', outline: 'none', fontWeight: 600 }}
                   />
                   <span style={{ color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace', fontWeight: 'bold' }}>/</span>
-                  
+
                   {/* Flags inline */}
                   <div style={{ display: 'flex', gap: '4px' }}>
                     {[
@@ -900,7 +902,7 @@ export default function ProgrammerCalculator() {
       )}
 
       {activeTab === 'password' && (
-        <div 
+        <div
           style={{
             display: 'grid',
             gridTemplateColumns: '1.2fr 1fr',
@@ -981,7 +983,7 @@ export default function ProgrammerCalculator() {
           {/* Right: Strength indicator and formatted password display */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div className="glass-panel" style={{ padding: '16px', background: 'rgba(16,20,35,0.4)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              
+
               {/* Formatted Output display */}
               <div style={{ background: 'rgba(5,7,12,0.6)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '12px', padding: '14px', position: 'relative', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -1034,9 +1036,9 @@ export default function ProgrammerCalculator() {
                 <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontFamily: 'monospace', lineHeight: 1.4 }}>
                   Entropy metrics indicate the total mathematical complexity ($2^E$ possibilities).<br />
                   {entropy < 40 ? '⚠️ High hazard: vulnerable to microsecond cracking.' :
-                   entropy >= 40 && entropy < 60 ? '⚡ Safe for generic web logins.' :
-                   entropy >= 60 && entropy < 80 ? '🔒 Superb: recommended for core user servers.' :
-                   '🛡️ Military shield: resistant to planetary brute force.'}
+                    entropy >= 40 && entropy < 60 ? '⚡ Safe for generic web logins.' :
+                      entropy >= 60 && entropy < 80 ? '🔒 Superb: recommended for core user servers.' :
+                        '🛡️ Military shield: resistant to planetary brute force.'}
                 </div>
               </div>
             </div>
@@ -1045,7 +1047,7 @@ export default function ProgrammerCalculator() {
       )}
 
       {activeTab === 'rot13' && (
-        <div 
+        <div
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',

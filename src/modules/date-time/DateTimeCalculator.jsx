@@ -113,49 +113,50 @@ export default function DateTimeCalculator() {
       <div 
         style={{
           display: 'flex',
+          gap: '8px',
           background: 'rgba(255,255,255,0.02)',
           border: '1px solid var(--border-color)',
-          borderRadius: '8px',
-          padding: '4px',
-          width: 'fit-content'
+          borderRadius: '20px',
+          padding: '6px',
+          width: 'fit-content',
+          flexWrap: 'wrap'
         }}
       >
-        <button
-          onClick={() => setActiveMode('diff')}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: activeMode === 'diff' ? `1px solid ${accentColor}40` : '1px solid transparent',
-            background: activeMode === 'diff' ? `${accentColor}18` : 'transparent',
-            color: activeMode === 'diff' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: activeMode === 'diff' ? 600 : 500,
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            boxShadow: activeMode === 'diff' ? `0 0 12px ${accentColor}20` : 'none'
-          }}
-        >
-          Date Difference
-        </button>
-        <button
-          onClick={() => setActiveMode('zone')}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: activeMode === 'zone' ? `1px solid ${accentColor}40` : '1px solid transparent',
-            background: activeMode === 'zone' ? `${accentColor}18` : 'transparent',
-            color: activeMode === 'zone' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: activeMode === 'zone' ? 600 : 500,
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            boxShadow: activeMode === 'zone' ? `0 0 12px ${accentColor}20` : 'none'
-          }}
-        >
-          World Timezone Converter
-        </button>
+        {[
+          { id: 'diff', name: 'Date Difference', icon: Calendar, color: '#ec4899' },
+          { id: 'zone', name: 'World Timezone Converter', icon: Globe, color: '#06b6d4' }
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeMode === tab.id;
+
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveMode(tab.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 16px',
+                borderRadius: '20px',
+                border: isActive ? `1px solid ${accentColor}` : '1px solid var(--border-color)',
+                background: isActive ? `${accentColor}26` : 'rgba(255, 255, 255, 0.02)',
+                color: isActive ? '#fff' : 'var(--text-secondary)',
+                fontWeight: 600,
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap',
+                boxShadow: isActive ? `0 0 12px ${accentColor}40` : 'none'
+              }}
+            >
+              <span style={{ color: isActive ? accentColor : 'rgba(255, 255, 255, 0.4)', display: 'inline-flex', alignItems: 'center' }}>
+                <Icon size={16} />
+              </span>
+              {tab.name}
+            </button>
+          );
+        })}
       </div>
 
       {/* Main calculation card split */}

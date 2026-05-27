@@ -2339,7 +2339,7 @@ export default function ChemistryCalculator() {
         padding: '6px',
         background: 'rgba(255, 255, 255, 0.02)',
         border: '1px solid rgba(255, 255, 255, 0.05)',
-        borderRadius: '12px',
+        borderRadius: '20px',
         marginTop: '8px',
         width: '100%'
       }}>
@@ -2362,21 +2362,21 @@ export default function ChemistryCalculator() {
                 justifyContent: 'center',
                 gap: '8px',
                 padding: '10px 16px',
-                background: isActive ? `${tab.color}18` : 'transparent',
-                border: isActive ? `1px solid ${tab.color}40` : '1px solid transparent',
-                borderRadius: '8px',
+                background: isActive ? `${accentColor}26` : 'rgba(255, 255, 255, 0.02)',
+                border: isActive ? `1px solid ${accentColor}` : '1px solid var(--border-color)',
+                borderRadius: '20px',
                 color: isActive ? '#fff' : 'var(--text-secondary)',
                 fontSize: '0.8rem',
-                fontWeight: isActive ? 600 : 500,
+                fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 whiteSpace: 'nowrap',
-                boxShadow: isActive ? `0 0 12px ${tab.color}20` : 'none',
+                boxShadow: isActive ? `0 0 12px ${accentColor}40` : 'none',
                 width: '100%'
               }}
               className="btn-glow"
             >
-              <span style={{ color: isActive ? tab.color : 'rgba(255, 255, 255, 0.4)', display: 'inline-flex', alignItems: 'center' }}>
+              <span style={{ color: isActive ? accentColor : 'rgba(255, 255, 255, 0.4)', display: 'inline-flex', alignItems: 'center' }}>
                 {tab.icon}
               </span>
               {tab.name}

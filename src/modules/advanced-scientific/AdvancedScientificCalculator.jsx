@@ -8,13 +8,13 @@ import { Settings, Calculator, Activity, Table2, Layers, X, FunctionSquare, Hash
 const math = create(all, {});
 
 const MODES = [
-  { id: 'MATRIX', label: 'MATRIX', icon: Grip },
-  { id: 'VECTOR', label: 'VECTOR', icon: ArrowRight },
-  { id: 'CMPLX', label: 'COMPLEX', icon: Layers },
-  { id: 'EQN', label: 'EQUATION', icon: FunctionSquare },
-  { id: 'STAT', label: 'STATISTICS', icon: Activity },
-  { id: 'TABLE', label: 'TABLE', icon: Table2 },
-  { id: 'BASE-N', label: 'BASE-N', icon: Hash }
+  { id: 'MATRIX', label: 'MATRIX', icon: Grip, color: '#f43f5e' },
+  { id: 'VECTOR', label: 'VECTOR', icon: ArrowRight, color: '#10b981' },
+  { id: 'CMPLX', label: 'COMPLEX', icon: Layers, color: '#8b5cf6' },
+  { id: 'EQN', label: 'EQUATION', icon: FunctionSquare, color: '#ec4899' },
+  { id: 'STAT', label: 'STATISTICS', icon: Activity, color: '#f59e0b' },
+  { id: 'TABLE', label: 'TABLE', icon: Table2, color: '#38bdf8' },
+  { id: 'BASE-N', label: 'BASE-N', icon: Hash, color: '#14b8a6' }
 ];
 
 export default function AdvancedScientificCalculator() {
@@ -659,14 +659,22 @@ export default function AdvancedScientificCalculator() {
       <div className="mode-selector">
         {MODES.map(mode => {
           const Icon = mode.icon;
+          const isActive = activeMode === mode.id;
           return (
             <button
               key={mode.id}
-              className={`mode-btn ${activeMode === mode.id ? 'active' : ''}`}
+              className={`mode-btn ${isActive ? 'active' : ''}`}
               onClick={() => { setActiveMode(mode.id); setError(''); setMatrixResult(null); setComplexResult(''); }}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                background: isActive ? `${accentColor}26` : 'rgba(255, 255, 255, 0.02)',
+                borderColor: isActive ? accentColor : 'var(--border-color)',
+                boxShadow: isActive ? `0 0 12px ${accentColor}40` : 'none',
+              }}
             >
-              <Icon size={14} />
+              <span style={{ color: isActive ? accentColor : 'rgba(255, 255, 255, 0.4)', display: 'inline-flex', alignItems: 'center' }}>
+                <Icon size={14} />
+              </span>
               {mode.label}
             </button>
           )

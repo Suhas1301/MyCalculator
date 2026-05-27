@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { evaluateExpression } from '../../utils/mathParser';
-import { GraduationCap, Plus, Trash2, CheckCircle2, AlertTriangle, Play, HelpCircle, Search, Copy, Check } from 'lucide-react';
+import { GraduationCap, Plus, Trash2, CheckCircle2, AlertTriangle, Play, HelpCircle, Search, Copy, Check, FunctionSquare, BookOpen, Brain } from 'lucide-react';
 
 const formulaLibrary = [
   // Integrals & Derivatives (Calculus)
@@ -275,7 +275,7 @@ export default function EducationSuite() {
   const [newFormulaText, setNewFormulaText] = useState('');
   const [newFormulaDesc, setNewFormulaDesc] = useState('');
   const [discoveredVars, setDiscoveredVars] = useState([]);
-  
+
   // Custom formula evaluation states
   const [selectedFormulaId, setSelectedFormulaId] = useState(null);
   const [evalVarValues, setEvalVarValues] = useState({});
@@ -319,11 +319,11 @@ export default function EducationSuite() {
   // Scan equation for variables
   const scanVariables = () => {
     if (!newFormulaText.trim()) return;
-    
+
     // Find all word characters and filter out numbers and math functions
     const regex = /[a-zA-Z]+/g;
     const matches = newFormulaText.match(regex) || [];
-    
+
     // De-duplicate and filter math functions
     const vars = Array.from(new Set(matches))
       .filter(v => !builtInTrigAndMathWords.includes(v.toLowerCase()));
@@ -343,7 +343,7 @@ export default function EducationSuite() {
     };
 
     addCustomFormula(newFormulaObj);
-    
+
     // Clear creator form
     setNewFormulaName('');
     setNewFormulaText('');
@@ -396,7 +396,7 @@ export default function EducationSuite() {
   };
 
   return (
-    <div 
+    <div
       className="animate-slide"
       style={{
         display: 'flex',
@@ -414,88 +414,55 @@ export default function EducationSuite() {
       </div>
 
       {/* Selector Subtabs */}
-      <div 
+      <div
         style={{
           display: 'flex',
+          gap: '8px',
           background: 'rgba(255,255,255,0.02)',
           border: '1px solid var(--border-color)',
-          borderRadius: '8px',
-          padding: '4px',
-          width: 'fit-content'
+          borderRadius: '20px',
+          padding: '6px',
+          width: 'fit-content',
+          flexWrap: 'wrap'
         }}
       >
-        <button
-          onClick={() => setActiveTab('custom')}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: activeTab === 'custom' ? `1px solid ${accentColor}40` : '1px solid transparent',
-            background: activeTab === 'custom' ? `${accentColor}18` : 'transparent',
-            color: activeTab === 'custom' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: activeTab === 'custom' ? 600 : 500,
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            boxShadow: activeTab === 'custom' ? `0 0 12px ${accentColor}20` : 'none'
-          }}
-        >
-          Custom Formula Builder
-        </button>
-        <button
-          onClick={() => setActiveTab('search')}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: activeTab === 'search' ? `1px solid ${accentColor}40` : '1px solid transparent',
-            background: activeTab === 'search' ? `${accentColor}18` : 'transparent',
-            color: activeTab === 'search' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: activeTab === 'search' ? 600 : 500,
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            boxShadow: activeTab === 'search' ? `0 0 12px ${accentColor}20` : 'none'
-          }}
-        >
-          Formula Search Library
-        </button>
-        <button
-          onClick={() => setActiveTab('cheat')}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: activeTab === 'cheat' ? `1px solid ${accentColor}40` : '1px solid transparent',
-            background: activeTab === 'cheat' ? `${accentColor}18` : 'transparent',
-            color: activeTab === 'cheat' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: activeTab === 'cheat' ? 600 : 500,
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            boxShadow: activeTab === 'cheat' ? `0 0 12px ${accentColor}20` : 'none'
-          }}
-        >
-          Formula Cheat-Sheets
-        </button>
-        <button
-          onClick={() => setActiveTab('quiz')}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: activeTab === 'quiz' ? `1px solid ${accentColor}40` : '1px solid transparent',
-            background: activeTab === 'quiz' ? `${accentColor}18` : 'transparent',
-            color: activeTab === 'quiz' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: activeTab === 'quiz' ? 600 : 500,
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            boxShadow: activeTab === 'quiz' ? `0 0 12px ${accentColor}20` : 'none'
-          }}
-        >
-          Practice Quizzes
-        </button>
+        {[
+          { id: 'custom', name: 'Custom Formula Builder', icon: FunctionSquare, color: '#8b5cf6' },
+          { id: 'search', name: 'Formula Search Library', icon: Search, color: '#3b82f6' },
+          { id: 'cheat', name: 'Formula Cheat-Sheets', icon: BookOpen, color: '#f59e0b' },
+          { id: 'quiz', name: 'Practice Quizzes', icon: Brain, color: '#14b8a6' }
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 16px',
+                borderRadius: '20px',
+                border: isActive ? `1px solid ${accentColor}` : '1px solid var(--border-color)',
+                background: isActive ? `${accentColor}26` : 'rgba(255, 255, 255, 0.02)',
+                color: isActive ? '#fff' : 'var(--text-secondary)',
+                fontWeight: 600,
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap',
+                boxShadow: isActive ? `0 0 12px ${accentColor}40` : 'none'
+              }}
+            >
+              <span style={{ color: isActive ? accentColor : 'rgba(255, 255, 255, 0.4)', display: 'inline-flex', alignItems: 'center' }}>
+                <Icon size={16} />
+              </span>
+              {tab.name}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab Panels */}
@@ -506,7 +473,7 @@ export default function EducationSuite() {
             {/* Custom formula creator form */}
             <form onSubmit={handleCreateFormula} className="glass-panel" style={{ padding: '20px', background: 'rgba(16,20,35,0.4)', display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', margin: 0 }}>Create Custom Formula</h3>
-              
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Formula Name</label>
@@ -587,7 +554,7 @@ export default function EducationSuite() {
             {/* Custom formula saved list */}
             <div className="glass-panel" style={{ padding: '20px', background: 'rgba(16,20,35,0.35)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff', margin: 0 }}>Saved Formula Catalog</h3>
-              
+
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
                 {customFormulas.map((f) => (
                   <div
@@ -637,7 +604,7 @@ export default function EducationSuite() {
               if (!activeFormula) return null;
 
               return (
-                <div 
+                <div
                   className="glass-panel"
                   style={{
                     padding: '20px',
@@ -703,7 +670,7 @@ export default function EducationSuite() {
                 </div>
               );
             })() : (
-              <div 
+              <div
                 className="glass-panel"
                 style={{
                   padding: '24px',
@@ -728,14 +695,14 @@ export default function EducationSuite() {
       )}
 
       {activeTab === 'search' && (
-        <div 
-          className="glass-panel animate-fade" 
-          style={{ 
-            padding: '20px', 
-            background: 'rgba(16, 20, 35, 0.4)', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '16px' 
+        <div
+          className="glass-panel animate-fade"
+          style={{
+            padding: '20px',
+            background: 'rgba(16, 20, 35, 0.4)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px'
           }}
         >
           {/* Header & Search Input */}
@@ -744,7 +711,7 @@ export default function EducationSuite() {
               <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', margin: 0 }}>Interactive Formula Search</h3>
               <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', margin: 0 }}>Search and copy key equations in Calculus, Trigonometry, and Physics</p>
             </div>
-            
+
             {/* Search Input bar */}
             <div style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
               <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
@@ -796,7 +763,7 @@ export default function EducationSuite() {
             {(() => {
               const filtered = formulaLibrary.filter(f => {
                 const matchCat = selectedCategory === 'All' || f.category === selectedCategory;
-                const matchesSearch = 
+                const matchesSearch =
                   f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   f.expression.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   f.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -839,13 +806,13 @@ export default function EducationSuite() {
                     <div>
                       {/* Top Row: Category Badge & Title */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span 
-                          style={{ 
-                            fontSize: '0.62rem', 
-                            fontWeight: 700, 
-                            textTransform: 'uppercase', 
+                        <span
+                          style={{
+                            fontSize: '0.62rem',
+                            fontWeight: 700,
+                            textTransform: 'uppercase',
                             letterSpacing: '0.05em',
-                            padding: '2px 8px', 
+                            padding: '2px 8px',
                             borderRadius: '4px',
                             background: `${categoryColor}10`,
                             color: categoryColor,
@@ -854,7 +821,7 @@ export default function EducationSuite() {
                         >
                           {f.category}
                         </span>
-                        
+
                         {/* Interactive Copy Button */}
                         <button
                           onClick={() => handleCopy(f.expression, idx)}
@@ -880,15 +847,15 @@ export default function EducationSuite() {
 
                     {/* Formula Text Box */}
                     <div>
-                      <code 
-                        className="math-mono" 
-                        style={{ 
-                          fontSize: '0.82rem', 
-                          color: '#fff', 
-                          padding: '10px 12px', 
-                          background: 'rgba(0,0,0,0.3)', 
-                          borderRadius: '8px', 
-                          display: 'block', 
+                      <code
+                        className="math-mono"
+                        style={{
+                          fontSize: '0.82rem',
+                          color: '#fff',
+                          padding: '10px 12px',
+                          background: 'rgba(0,0,0,0.3)',
+                          borderRadius: '8px',
+                          display: 'block',
                           borderLeft: `3px solid ${categoryColor}`,
                           wordBreak: 'break-all'
                         }}
@@ -946,7 +913,7 @@ export default function EducationSuite() {
       )}
 
       {activeTab === 'quiz' && (
-        <div 
+        <div
           className="glass-panel animate-fade"
           style={{
             padding: '24px',
@@ -973,12 +940,12 @@ export default function EducationSuite() {
             {quizzes[quizIdx].options.map((opt, oIdx) => {
               let optBorder = '1px solid var(--border-color)';
               let optBg = 'transparent';
-              
+
               if (selectedAnswer === oIdx) {
                 optBorder = `1px solid ${accentColor}`;
                 optBg = 'rgba(255,255,255,0.02)';
               }
-              
+
               if (quizSubmitted) {
                 if (oIdx === quizzes[quizIdx].answerIdx) {
                   optBorder = '1px solid #00ff66';
@@ -1034,7 +1001,7 @@ export default function EducationSuite() {
           </div>
 
           {quizSubmitted && (
-            <div 
+            <div
               style={{
                 padding: '12px 16px',
                 borderRadius: '8px',

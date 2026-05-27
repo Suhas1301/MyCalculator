@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Landmark, TrendingUp, DollarSign, Percent, Calendar } from 'lucide-react';
+import { Landmark, TrendingUp, DollarSign, Percent, Calendar, Coins, ArrowRightLeft, ChevronDown, Search } from 'lucide-react';
+import { currencyDetails, getDisplayName } from '../../utils/CurrencyData';
 
 export default function FinancialCalculator() {
-  const { getAccentColor } = useApp();
+  const { getAccentColor, currencyRates, isCurrencyLoading } = useApp();
   const accentColor = getAccentColor('financial');
 
-  const [activeTab, setActiveTab] = useState('loan'); // loan, sip, compound
+  const [activeTab, setActiveTab] = useState('loan'); // loan, sip, compound, currency
 
   // Loan EMI inputs
   const [loanPrincipal, setLoanPrincipal] = useState(100000);
@@ -25,6 +26,37 @@ export default function FinancialCalculator() {
   const [compTenure, setCompTenure] = useState(10); // years
   const [compFreq, setCompFreq] = useState(12); // compounding per year (12 = monthly, 4 = quarterly, 1 = annually)
 
+  // Currency Converter inputs
+  const [currFrom, setCurrFrom] = useState('USD');
+  const [currTo, setCurrTo] = useState('EUR');
+  const [currAmount, setCurrAmount] = useState(1000);
+
+  // Dropdown states & search queries
+  const [isOpenCurrFrom, setIsOpenCurrFrom] = useState(false);
+  const [isOpenCurrTo, setIsOpenCurrTo] = useState(false);
+  const [searchCurrFrom, setSearchCurrFrom] = useState('');
+  const [searchCurrTo, setSearchCurrTo] = useState('');
+
+  // Dropdown element references for click-outside detection
+  const dropdownCurrFromRef = useRef(null);
+  const dropdownCurrToRef = useRef(null);
+
+  // Click-outside listener
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownCurrFromRef.current && !dropdownCurrFromRef.current.contains(event.target)) {
+        setIsOpenCurrFrom(false);
+      }
+      if (dropdownCurrToRef.current && !dropdownCurrToRef.current.contains(event.target)) {
+        setIsOpenCurrTo(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // Output stats state
   const [results, setResults] = useState({
     primary: 0,
@@ -35,18 +67,18 @@ export default function FinancialCalculator() {
 
   useEffect(() => {
     calculateResults();
-  }, [activeTab, loanPrincipal, loanRate, loanTenure, sipMonthly, sipRate, sipTenure, compPrincipal, compMonthly, compRate, compTenure, compFreq]);
+  }, [activeTab, loanPrincipal, loanRate, loanTenure, sipMonthly, sipRate, sipTenure, compPrincipal, compMonthly, compRate, compTenure, compFreq, currFrom, currTo, currAmount, currencyRates]);
 
   const calculateResults = () => {
     if (activeTab === 'loan') {
       const P = parseFloat(loanPrincipal);
       const annualR = parseFloat(loanRate);
       const N = parseFloat(loanTenure) * 12; // total months
-      
+
       if (isNaN(P) || isNaN(annualR) || isNaN(N) || P <= 0 || annualR <= 0 || N <= 0) return;
 
       const r = (annualR / 12) / 100; // monthly rate
-      
+
       // EMI = P * r * (1+r)^N / ((1+r)^N - 1)
       const emi = P * r * Math.pow(1 + r, N) / (Math.pow(1 + r, N) - 1);
       const totalRepay = emi * N;
@@ -58,17 +90,17 @@ export default function FinancialCalculator() {
         tertiary: totalRepay,     // Total Payments
         percentage: (P / totalRepay) * 100
       });
-    } 
-    
+    }
+
     else if (activeTab === 'sip') {
       const P = parseFloat(sipMonthly);
       const annualR = parseFloat(sipRate);
       const N = parseFloat(sipTenure) * 12; // total months
-      
+
       if (isNaN(P) || isNaN(annualR) || isNaN(N) || P <= 0 || annualR <= 0 || N <= 0) return;
 
       const i = (annualR / 12) / 100; // monthly return rate
-      
+
       // Future Value = P * [ ( (1 + i)^N - 1 ) / i ] * (1 + i)
       const futureVal = P * ((Math.pow(1 + i, N) - 1) / i) * (1 + i);
       const totalInvest = P * N;
@@ -80,25 +112,25 @@ export default function FinancialCalculator() {
         tertiary: wealthGained,   // Wealth Gained
         percentage: (totalInvest / futureVal) * 100
       });
-    } 
-    
+    }
+
     else if (activeTab === 'compound') {
       const P = parseFloat(compPrincipal);
       const PMT = parseFloat(compMonthly);
       const r = parseFloat(compRate) / 100;
       const t = parseFloat(compTenure);
       const n = parseInt(compFreq);
-      
+
       if (isNaN(P) || isNaN(PMT) || isNaN(r) || isNaN(t) || isNaN(n) || t <= 0) return;
 
       const totalPayments = n * t;
       const ratePerPeriod = r / n;
-      
+
       // Compound interest formula: A = P(1 + r/n)^(nt) + PMT * [((1 + r/n)^(nt) - 1) / (r/n)]
       const compoundPrincipalPart = P * Math.pow(1 + ratePerPeriod, totalPayments);
       const compoundContributionPart = PMT * ((Math.pow(1 + ratePerPeriod, totalPayments) - 1) / ratePerPeriod);
       const futureVal = compoundPrincipalPart + compoundContributionPart;
-      
+
       const totalInvest = P + (PMT * 12 * t);
       const interestGained = futureVal - totalInvest;
 
@@ -107,6 +139,26 @@ export default function FinancialCalculator() {
         secondary: totalInvest,     // Total contributions
         tertiary: interestGained,   // Interest accrued
         percentage: (totalInvest / futureVal) * 100
+      });
+    }
+    
+    else if (activeTab === 'currency') {
+      if (!currencyRates) return;
+      const amount = parseFloat(currAmount);
+      if (isNaN(amount)) return;
+      
+      const rateFrom = currencyRates[currFrom] || 1;
+      const rateTo = currencyRates[currTo] || 1;
+      
+      // Conversion from base EUR
+      const converted = (amount / rateFrom) * rateTo;
+      const exchangeRate = rateTo / rateFrom;
+      
+      setResults({
+        primary: converted,
+        secondary: exchangeRate,
+        tertiary: amount,
+        percentage: 100
       });
     }
   };
@@ -186,13 +238,14 @@ export default function FinancialCalculator() {
   };
 
   const tabs = [
-    { id: 'loan', name: 'Loan EMI Planner', icon: Landmark },
-    { id: 'sip', name: 'SIP Wealth Gainer', icon: TrendingUp },
-    { id: 'compound', name: 'Compound Accrual', icon: DollarSign }
+    { id: 'loan', name: 'Loan / EMI', icon: Landmark, color: '#3b82f6' },
+    { id: 'sip', name: 'SIP Wealth Gainer', icon: TrendingUp, color: '#10b981' },
+    { id: 'compound', name: 'Compound Accrual', icon: DollarSign, color: '#f59e0b' },
+    { id: 'currency', name: 'Currency Converter', icon: Coins, color: '#ec4899' }
   ];
 
   return (
-    <div 
+    <div
       className="animate-slide"
       style={{
         display: 'flex',
@@ -210,14 +263,16 @@ export default function FinancialCalculator() {
       </div>
 
       {/* Tabs */}
-      <div 
+      <div
         style={{
           display: 'flex',
+          gap: '8px',
           background: 'rgba(255,255,255,0.02)',
           border: '1px solid var(--border-color)',
-          borderRadius: '8px',
-          padding: '4px',
-          width: 'fit-content'
+          borderRadius: '20px',
+          padding: '6px',
+          width: 'fit-content',
+          flexWrap: 'wrap'
         }}
       >
         {tabs.map((tab) => {
@@ -233,19 +288,21 @@ export default function FinancialCalculator() {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '10px 16px',
-                borderRadius: '8px',
-                border: isActive ? `1px solid ${accentColor}40` : '1px solid transparent',
-                background: isActive ? `${accentColor}18` : 'transparent',
+                borderRadius: '20px',
+                border: isActive ? `1px solid ${accentColor}` : '1px solid var(--border-color)',
+                background: isActive ? `${accentColor}26` : 'rgba(255, 255, 255, 0.02)',
                 color: isActive ? '#fff' : 'var(--text-secondary)',
-                fontWeight: isActive ? 600 : 500,
+                fontWeight: 600,
                 fontSize: '0.8rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 whiteSpace: 'nowrap',
-                boxShadow: isActive ? `0 0 12px ${accentColor}20` : 'none'
+                boxShadow: isActive ? `0 0 12px ${accentColor}40` : 'none'
               }}
             >
-              <Icon size={16} />
+              <span style={{ color: isActive ? accentColor : 'rgba(255, 255, 255, 0.4)', display: 'inline-flex', alignItems: 'center' }}>
+                <Icon size={16} />
+              </span>
               {tab.name}
             </button>
           );
@@ -253,7 +310,7 @@ export default function FinancialCalculator() {
       </div>
 
       {/* Calculator Body Grid */}
-      <div 
+      <div
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 360px',
@@ -262,7 +319,7 @@ export default function FinancialCalculator() {
         }}
       >
         {/* Left Side: Dynamic Inputs Form Card */}
-        <div 
+        <div
           className="glass-panel"
           style={{
             padding: '20px',
@@ -453,10 +510,158 @@ export default function FinancialCalculator() {
               </div>
             </div>
           )}
+
+          {activeTab === 'currency' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              {isCurrencyLoading && <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Fetching live rates...</div>}
+              {/* Amount Input */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Amount to Convert</label>
+                <div style={{ position: 'relative' }}>
+                  <DollarSign size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="number"
+                    value={currAmount}
+                    onChange={(e) => setCurrAmount(e.target.value)}
+                    className="glass-input math-mono"
+                    style={{ width: '100%', paddingLeft: '32px' }}
+                  />
+                </div>
+              </div>
+
+              {/* From Currency Custom Dropdown */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>From Currency</label>
+                <div ref={dropdownCurrFromRef} style={{ position: 'relative', width: '100%' }}>
+                  <button
+                    onClick={() => setIsOpenCurrFrom(!isOpenCurrFrom)}
+                    className="glass-input"
+                    style={{
+                      width: '100%', cursor: 'pointer', fontSize: '0.88rem', display: 'flex',
+                      alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px',
+                      background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                      {getDisplayName(currFrom)}
+                    </span>
+                    <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
+                  </button>
+                  {isOpenCurrFrom && (
+                    <div className="glass-panel" style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '6px',
+                      background: 'rgba(10, 12, 22, 0.96)', backdropFilter: 'blur(16px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', maxHeight: '260px',
+                      overflowY: 'auto', zIndex: 100, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
+                        <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
+                        <input
+                          type="text" placeholder="Search currency or country..." value={searchCurrFrom} onChange={(e) => setSearchCurrFrom(e.target.value)}
+                          className="glass-input" style={{ flex: 1, fontSize: '0.8rem', padding: '4px 8px', background: 'rgba(255,255,255,0.02)', border: 'none', outline: 'none' }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
+                        {Object.keys(currencyRates || {})
+                          .filter(c => currencyDetails[c] !== undefined)
+                          .filter(c => {
+                            const details = currencyDetails[c];
+                            const query = searchCurrFrom.toLowerCase();
+                            if (!query) return true;
+                            if (c.toLowerCase().includes(query)) return true;
+                            return details && (details.country.toLowerCase().includes(query) || details.name.toLowerCase().includes(query));
+                          }).map(c => {
+                            const isSel = currFrom === c;
+                            const details = currencyDetails[c];
+                            return (
+                              <button key={c} onClick={() => { setCurrFrom(c); setIsOpenCurrFrom(false); setSearchCurrFrom(''); }}
+                                style={{
+                                  padding: '8px 12px', background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent', border: 'none',
+                                  color: isSel ? accentColor : '#fff', fontSize: '0.82rem', textAlign: 'left', cursor: 'pointer',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all var(--transition-fast)'
+                                }} className="btn-glow">
+                                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{getDisplayName(c)}</span>
+                                {details && <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{details.symbol}</span>}
+                              </button>
+                            );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* To Currency Custom Dropdown */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>To Currency</label>
+                <div ref={dropdownCurrToRef} style={{ position: 'relative', width: '100%' }}>
+                  <button
+                    onClick={() => setIsOpenCurrTo(!isOpenCurrTo)}
+                    className="glass-input"
+                    style={{
+                      width: '100%', cursor: 'pointer', fontSize: '0.88rem', display: 'flex',
+                      alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px',
+                      background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                      {getDisplayName(currTo)}
+                    </span>
+                    <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
+                  </button>
+                  {isOpenCurrTo && (
+                    <div className="glass-panel" style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '6px',
+                      background: 'rgba(10, 12, 22, 0.96)', backdropFilter: 'blur(16px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', maxHeight: '260px',
+                      overflowY: 'auto', zIndex: 100, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
+                        <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
+                        <input
+                          type="text" placeholder="Search currency or country..." value={searchCurrTo} onChange={(e) => setSearchCurrTo(e.target.value)}
+                          className="glass-input" style={{ flex: 1, fontSize: '0.8rem', padding: '4px 8px', background: 'rgba(255,255,255,0.02)', border: 'none', outline: 'none' }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
+                        {Object.keys(currencyRates || {})
+                          .filter(c => currencyDetails[c] !== undefined)
+                          .filter(c => {
+                            const details = currencyDetails[c];
+                            const query = searchCurrTo.toLowerCase();
+                            if (!query) return true;
+                            if (c.toLowerCase().includes(query)) return true;
+                            return details && (details.country.toLowerCase().includes(query) || details.name.toLowerCase().includes(query));
+                          }).map(c => {
+                            const isSel = currTo === c;
+                            const details = currencyDetails[c];
+                            return (
+                              <button key={c} onClick={() => { setCurrTo(c); setIsOpenCurrTo(false); setSearchCurrTo(''); }}
+                                style={{
+                                  padding: '8px 12px', background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent', border: 'none',
+                                  color: isSel ? accentColor : '#fff', fontSize: '0.82rem', textAlign: 'left', cursor: 'pointer',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all var(--transition-fast)'
+                                }} className="btn-glow">
+                                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{getDisplayName(c)}</span>
+                                {details && <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{details.symbol}</span>}
+                              </button>
+                            );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Side: Charts & Computational Breakdown Details */}
-        <div 
+        <div
           className="glass-panel"
           style={{
             padding: '20px',
@@ -471,7 +676,7 @@ export default function FinancialCalculator() {
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {renderDonutChart()}
             {/* Center Label Percentage text */}
-            <div 
+            <div
               style={{
                 position: 'absolute',
                 display: 'flex',
@@ -487,27 +692,45 @@ export default function FinancialCalculator() {
           </div>
 
           {/* Core financial readouts */}
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                {activeTab === 'loan' ? 'Monthly EMI:' : 'Future Wealth Accumulation:'}
-              </span>
-              <span className="math-mono" style={{ fontSize: '1.25rem', fontWeight: 800, color: accentColor }}>
-                {fmt(results.primary)}
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: accentColor }} />
-                <span style={{ color: 'var(--text-secondary)' }}>
-                  {activeTab === 'loan' ? 'Total Principal:' : 'Total Invested Capital:'}
+          {activeTab === 'currency' ? (
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                  {results.tertiary} {currFrom} =
+                </span>
+                <span className="math-mono" style={{ fontSize: '2rem', fontWeight: 800, color: accentColor, textAlign: 'center' }}>
+                  {results.primary.toFixed(2)} {currTo}
                 </span>
               </div>
-              <span className="math-mono" style={{ fontWeight: 600, color: '#fff' }}>
-                {activeTab === 'loan' ? fmt(loanPrincipal) : fmt(results.secondary)}
-              </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Exchange Rate</span>
+                <span className="math-mono" style={{ fontWeight: 600, color: '#fff' }}>
+                  1 {currFrom} = {results.secondary.toFixed(4)} {currTo}
+                </span>
+              </div>
             </div>
+          ) : (
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                  {activeTab === 'loan' ? 'Monthly EMI:' : 'Future Wealth Accumulation:'}
+                </span>
+                <span className="math-mono" style={{ fontSize: '1.25rem', fontWeight: 800, color: accentColor }}>
+                  {fmt(results.primary)}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: accentColor }} />
+                  <span style={{ color: 'var(--text-secondary)' }}>
+                    {activeTab === 'loan' ? 'Total Principal:' : 'Total Invested Capital:'}
+                  </span>
+                </div>
+                <span className="math-mono" style={{ fontWeight: 600, color: '#fff' }}>
+                  {activeTab === 'loan' ? fmt(loanPrincipal) : fmt(results.secondary)}
+                </span>
+              </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -520,14 +743,14 @@ export default function FinancialCalculator() {
                 {activeTab === 'loan' ? fmt(results.secondary) : fmt(results.tertiary)}
               </span>
             </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', paddingTop: '8px', borderTop: '1px solid var(--border-color)', marginTop: '4px' }}>
-              <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>Total Payments value:</span>
-              <span className="math-mono" style={{ fontWeight: 700, color: '#fff' }}>
-                {activeTab === 'loan' ? fmt(results.tertiary) : fmt(results.primary)}
-              </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', paddingTop: '8px', borderTop: '1px solid var(--border-color)', marginTop: '4px' }}>
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>Total Payments value:</span>
+                <span className="math-mono" style={{ fontWeight: 700, color: '#fff' }}>
+                  {activeTab === 'loan' ? fmt(results.tertiary) : fmt(results.primary)}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

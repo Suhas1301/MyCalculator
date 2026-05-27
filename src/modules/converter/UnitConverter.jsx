@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ArrowLeftRight, Coins, Ruler, Scale, Flame, RefreshCw, Search, ChevronDown, Grid, Box, Gauge, Zap, Sun, Thermometer, DollarSign, Bitcoin, Banknote } from 'lucide-react';
+import { currencyDetails, getDisplayName } from '../../utils/CurrencyData';
 
 const converterUnits = {
   length: {
@@ -123,37 +124,7 @@ const converterUnits = {
   }
 };
 
-const currencyDetails = {
-  USD: { country: 'United States', name: 'Dollar', symbol: '$', flag: '🇺🇸' },
-  EUR: { country: 'European Union', name: 'Euro', symbol: '€', flag: '🇪🇺' },
-  GBP: { country: 'United Kingdom', name: 'Pound Sterling', symbol: '£', flag: '🇬🇧' },
-  INR: { country: 'India', name: 'Rupee', symbol: '₹', flag: '🇮🇳' },
-  JPY: { country: 'Japan', name: 'Yen', symbol: '¥', flag: '🇯🇵' },
-  CAD: { country: 'Canada', name: 'Dollar', symbol: 'C$', flag: '🇨🇦' },
-  AUD: { country: 'Australia', name: 'Dollar', symbol: 'A$', flag: '🇦🇺' },
-  CHF: { country: 'Switzerland', name: 'Franc', symbol: 'CHF', flag: '🇨🇭' },
-  CNY: { country: 'China', name: 'Yuan', symbol: '¥', flag: '🇨🇳' },
-  NZD: { country: 'New Zealand', name: 'Dollar', symbol: 'NZ$', flag: '🇳🇿' },
-  AED: { country: 'United Arab Emirates', name: 'Dirham', symbol: 'د.إ', flag: '🇦🇪' },
-  SAR: { country: 'Saudi Arabia', name: 'Riyal', symbol: 'ر.س', flag: '🇸🇦' },
-  SGD: { country: 'Singapore', name: 'Dollar', symbol: 'S$', flag: '🇸🇬' },
-  HKD: { country: 'Hong Kong', name: 'Dollar', symbol: 'HK$', flag: '🇭🇰' },
-  SEK: { country: 'Sweden', name: 'Krona', symbol: 'kr', flag: '🇸🇪' },
-  KRW: { country: 'South Korea', name: 'Won', symbol: '₩', flag: '🇰🇷' },
-  MXN: { country: 'Mexico', name: 'Peso', symbol: '$', flag: '🇲🇽' },
-  BRL: { country: 'Brazil', name: 'Real', symbol: 'R$', flag: '🇧🇷' },
-  ZAR: { country: 'South Africa', name: 'Rand', symbol: 'R', flag: '🇿🇦' },
-  RUB: { country: 'Russia', name: 'Ruble', symbol: '₽', flag: '🇷🇺' },
-  TRY: { country: 'Turkey', name: 'Lira', symbol: '₺', flag: '🇹🇷' },
-  NOK: { country: 'Norway', name: 'Krone', symbol: 'kr', flag: '🇳🇴' },
-  DKK: { country: 'Denmark', name: 'Krone', symbol: 'kr', flag: '🇩🇰' },
-  PLN: { country: 'Poland', name: 'Zloty', symbol: 'zł', flag: '🇵🇱' },
-  THB: { country: 'Thailand', name: 'Baht', symbol: '฿', flag: '🇹🇭' },
-  IDR: { country: 'Indonesia', name: 'Rupiah', symbol: 'Rp', flag: '🇮🇩' },
-  MYR: { country: 'Malaysia', name: 'Ringgit', symbol: 'RM', flag: '🇲🇾' },
-  PHP: { country: 'Philippines', name: 'Peso', symbol: '₱', flag: '🇵🇭' },
-  ILS: { country: 'Israel', name: 'Shekel', symbol: '₪', flag: '🇮🇱' }
-};
+
 
 const cryptoDetails = {
   BTC: { name: 'Bitcoin', symbol: '₿' },
@@ -168,13 +139,6 @@ const cryptoDetails = {
   USD: { name: 'US Dollar', symbol: '$' }
 };
 
-const getDisplayName = (code) => {
-  const details = currencyDetails[code];
-  if (details) {
-    return `${details.flag} ${details.country} (${code})`;
-  }
-  return `${code} (${code})`;
-};
 
 const getCryptoDisplayName = (code) => {
   const details = cryptoDetails[code];

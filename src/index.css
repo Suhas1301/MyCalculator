@@ -25,6 +25,17 @@ html, body {
   position: relative;
 }
 
+/* Hide Number Input Spinners globally */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
 /* Beautiful dynamic neon aura blobs in the background */
 .neon-auras {
   position: fixed;

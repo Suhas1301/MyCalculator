@@ -164,52 +164,53 @@ export default function HealthCalculator() {
       </div>
 
       {/* Select Tab */}
-      <div 
+      <div
         style={{
           display: 'flex',
+          gap: '8px',
           background: 'rgba(255,255,255,0.02)',
           border: '1px solid var(--border-color)',
-          borderRadius: '8px',
-          padding: '4px',
-          width: 'fit-content'
+          borderRadius: '20px',
+          padding: '6px',
+          width: 'fit-content',
+          flexWrap: 'wrap'
         }}
       >
-        <button
-          onClick={() => setActiveTab('bmi')}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: activeTab === 'bmi' ? `1px solid ${accentColor}40` : '1px solid transparent',
-            background: activeTab === 'bmi' ? `${accentColor}18` : 'transparent',
-            color: activeTab === 'bmi' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: activeTab === 'bmi' ? 600 : 500,
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            boxShadow: activeTab === 'bmi' ? `0 0 12px ${accentColor}20` : 'none'
-          }}
-        >
-          Body Mass Index (BMI)
-        </button>
-        <button
-          onClick={() => setActiveTab('bmr')}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: activeTab === 'bmr' ? `1px solid ${accentColor}40` : '1px solid transparent',
-            background: activeTab === 'bmr' ? `${accentColor}18` : 'transparent',
-            color: activeTab === 'bmr' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: activeTab === 'bmr' ? 600 : 500,
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            boxShadow: activeTab === 'bmr' ? `0 0 12px ${accentColor}20` : 'none'
-          }}
-        >
-          BMR & Calories
-        </button>
+        {[
+          { id: 'bmi', name: 'Body Mass Index (BMI)', icon: User, color: '#10b981' },
+          { id: 'bmr', name: 'BMR & Calories', icon: HeartPulse, color: '#f43f5e' }
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 16px',
+                borderRadius: '20px',
+                border: isActive ? `1px solid ${accentColor}` : '1px solid var(--border-color)',
+                background: isActive ? `${accentColor}26` : 'rgba(255, 255, 255, 0.02)',
+                color: isActive ? '#fff' : 'var(--text-secondary)',
+                fontWeight: 600,
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap',
+                boxShadow: isActive ? `0 0 12px ${accentColor}40` : 'none'
+              }}
+            >
+              <span style={{ color: isActive ? accentColor : 'rgba(255, 255, 255, 0.4)', display: 'inline-flex', alignItems: 'center' }}>
+                <Icon size={16} />
+              </span>
+              {tab.name}
+            </button>
+          );
+        })}
       </div>
 
       {/* Grid splits */}

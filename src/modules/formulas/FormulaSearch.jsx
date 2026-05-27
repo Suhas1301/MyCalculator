@@ -97,7 +97,7 @@ const formulaLibrary = [
       const b = parseFloat(v.b);
       const k = parseFloat(v.k);
       if (isNaN(a) || isNaN(b) || isNaN(k)) return '';
-      if (k === 0) return b - a; 
+      if (k === 0) return b - a;
       return (Math.exp(k * b) - Math.exp(k * a)) / k;
     },
     resultLabel: "Definite Integral Area"
@@ -572,7 +572,7 @@ export default function FormulaSearch() {
   };
 
   return (
-    <div 
+    <div
       className="animate-slide"
       style={{
         display: 'flex',
@@ -593,7 +593,7 @@ export default function FormulaSearch() {
       </div>
 
       {/* Main computational split */}
-      <div 
+      <div
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 380px',
@@ -603,7 +603,7 @@ export default function FormulaSearch() {
         }}
       >
         {/* Left Side: Library catalog with search and filters */}
-        <div 
+        <div
           className="glass-panel"
           style={{
             padding: '20px',
@@ -620,7 +620,7 @@ export default function FormulaSearch() {
               <Sigma size={18} style={{ color: accentColor }} />
               Formulas Lookup
             </h3>
-            
+
             <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
               <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
               <input
@@ -668,21 +668,21 @@ export default function FormulaSearch() {
           </div>
 
           {/* Scrollable list catalog */}
-          <div 
-            style={{ 
-              flex: 1, 
-              overflowY: 'auto', 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', 
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
               gap: '12px',
-              paddingRight: '4px' 
+              paddingRight: '4px'
             }}
           >
             {(() => {
               const query = searchQuery.toLowerCase().trim();
               const filtered = formulaLibrary.filter(f => {
                 const matchCat = selectedCategory === 'All' || f.category === selectedCategory;
-                const matchesSearch = !query || 
+                const matchesSearch = !query ||
                   f.name.toLowerCase().includes(query) ||
                   f.expression.toLowerCase().includes(query) ||
                   f.desc.toLowerCase().includes(query) ||
@@ -729,13 +729,13 @@ export default function FormulaSearch() {
                     <div>
                       {/* Badge and action row */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span 
-                          style={{ 
-                            fontSize: '0.6rem', 
-                            fontWeight: 700, 
-                            textTransform: 'uppercase', 
+                        <span
+                          style={{
+                            fontSize: '0.6rem',
+                            fontWeight: 700,
+                            textTransform: 'uppercase',
                             letterSpacing: '0.05em',
-                            padding: '2px 8px', 
+                            padding: '2px 8px',
                             borderRadius: '4px',
                             background: `${catColor}15`,
                             color: catColor,
@@ -744,7 +744,7 @@ export default function FormulaSearch() {
                         >
                           {f.category}
                         </span>
-                        
+
                         <div style={{ display: 'flex', gap: '4px' }} onClick={e => e.stopPropagation()}>
                           <button
                             onClick={() => handleCopy(f.expression, idx)}
@@ -773,15 +773,15 @@ export default function FormulaSearch() {
 
                     {/* Formula text code block */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <code 
-                        className="math-mono" 
-                        style={{ 
-                          fontSize: '0.78rem', 
-                          color: '#fff', 
-                          padding: '8px 10px', 
-                          background: 'rgba(0,0,0,0.25)', 
-                          borderRadius: '6px', 
-                          display: 'block', 
+                      <code
+                        className="math-mono"
+                        style={{
+                          fontSize: '0.78rem',
+                          color: '#fff',
+                          padding: '8px 10px',
+                          background: 'rgba(0,0,0,0.25)',
+                          borderRadius: '6px',
+                          display: 'block',
                           borderLeft: `2.5px solid ${catColor}`,
                           wordBreak: 'break-all'
                         }}
@@ -815,7 +815,7 @@ export default function FormulaSearch() {
         {/* Right Side: Interactive solver panel */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%', minHeight: 0, boxSizing: 'border-box' }}>
           {activeFormula ? (
-            <div 
+            <div
               className="glass-panel"
               style={{
                 padding: '24px',
@@ -829,12 +829,12 @@ export default function FormulaSearch() {
               }}
             >
               <div>
-                <span 
-                  style={{ 
-                    fontSize: '0.62rem', 
-                    fontWeight: 700, 
-                    color: accentColor, 
-                    textTransform: 'uppercase', 
+                <span
+                  style={{
+                    fontSize: '0.62rem',
+                    fontWeight: 700,
+                    color: accentColor,
+                    textTransform: 'uppercase',
                     letterSpacing: '0.1em',
                     display: 'flex',
                     alignItems: 'center',
@@ -851,7 +851,7 @@ export default function FormulaSearch() {
               </div>
 
               {/* Monospace Formula Display */}
-              <div 
+              <div
                 style={{
                   padding: '14px',
                   background: 'rgba(0, 0, 0, 0.35)',
@@ -863,13 +863,13 @@ export default function FormulaSearch() {
                   gap: '4px'
                 }}
               >
-                <code 
-                  className="math-mono" 
-                  style={{ 
-                    fontSize: '1.05rem', 
-                    color: '#fff', 
-                    wordBreak: 'break-all', 
-                    fontWeight: 700 
+                <code
+                  className="math-mono"
+                  style={{
+                    fontSize: '1.05rem',
+                    color: '#fff',
+                    wordBreak: 'break-all',
+                    fontWeight: 700
                   }}
                 >
                   {activeFormula.expression}
@@ -882,19 +882,19 @@ export default function FormulaSearch() {
                 <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)', fontWeight: 600 }}>
                   Adjust Parameters
                 </span>
-                
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {activeFormula.variables.map(v => (
-                    <div 
-                      key={v.name} 
-                      style={{ 
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        gap: '6px', 
-                        padding: '10px 14px', 
-                        background: 'rgba(255,255,255,0.01)', 
-                        border: '1px solid var(--border-color)', 
-                        borderRadius: '8px' 
+                    <div
+                      key={v.name}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '6px',
+                        padding: '10px 14px',
+                        background: 'rgba(255,255,255,0.01)',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: '8px'
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -905,7 +905,7 @@ export default function FormulaSearch() {
                           {v.name} {v.unit ? `(${v.unit})` : ''}
                         </code>
                       </div>
-                      
+
                       <input
                         type="number"
                         value={solverInputs[v.name] ?? ''}
@@ -924,37 +924,37 @@ export default function FormulaSearch() {
               </div>
 
               {/* Highlighted Solution Glow panel */}
-              <div 
-                style={{ 
-                  padding: '16px 20px', 
-                  background: 'rgba(5, 7, 12, 0.5)', 
-                  borderRadius: '12px', 
-                  border: `1.5px solid rgba(157, 255, 0, 0.15)`, 
-                  boxShadow: `0 0 20px rgba(157, 255, 0, 0.03)`, 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  gap: '4px', 
-                  textAlign: 'center' 
+              <div
+                style={{
+                  padding: '16px 20px',
+                  background: 'rgba(5, 7, 12, 0.5)',
+                  borderRadius: '12px',
+                  border: `1.5px solid rgba(157, 255, 0, 0.15)`,
+                  boxShadow: `0 0 20px rgba(157, 255, 0, 0.03)`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  textAlign: 'center'
                 }}
               >
-                <span 
-                  style={{ 
-                    fontSize: '0.65rem', 
-                    textTransform: 'uppercase', 
-                    letterSpacing: '0.08em', 
+                <span
+                  style={{
+                    fontSize: '0.65rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
                     color: 'var(--text-muted)',
                     fontWeight: 600
                   }}
                 >
                   {activeFormula.resultLabel} {activeFormula.resultUnit ? `(${activeFormula.resultUnit})` : ''}
                 </span>
-                
-                <span 
-                  className="math-mono" 
-                  style={{ 
-                    fontSize: '1.6rem', 
-                    fontWeight: 800, 
-                    color: '#fff', 
+
+                <span
+                  className="math-mono"
+                  style={{
+                    fontSize: '1.6rem',
+                    fontWeight: 800,
+                    color: '#fff',
                     textShadow: `0 0 15px ${accentColor}20`,
                     wordBreak: 'break-all'
                   }}
@@ -964,7 +964,7 @@ export default function FormulaSearch() {
               </div>
             </div>
           ) : (
-            <div 
+            <div
               className="glass-panel flex-center"
               style={{
                 padding: '24px',
