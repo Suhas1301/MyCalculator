@@ -123,15 +123,17 @@ export default function DateTimeCalculator() {
         <button
           onClick={() => setActiveMode('diff')}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: activeMode === 'diff' ? accentColor : 'transparent',
-            color: activeMode === 'diff' ? '#000' : 'var(--text-secondary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: activeMode === 'diff' ? `1px solid ${accentColor}40` : '1px solid transparent',
+            background: activeMode === 'diff' ? `${accentColor}18` : 'transparent',
+            color: activeMode === 'diff' ? '#fff' : 'var(--text-secondary)',
+            fontWeight: activeMode === 'diff' ? 600 : 500,
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            boxShadow: activeMode === 'diff' ? `0 0 12px ${accentColor}20` : 'none'
           }}
         >
           Date Difference
@@ -139,15 +141,17 @@ export default function DateTimeCalculator() {
         <button
           onClick={() => setActiveMode('zone')}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: activeMode === 'zone' ? accentColor : 'transparent',
-            color: activeMode === 'zone' ? '#000' : 'var(--text-secondary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: activeMode === 'zone' ? `1px solid ${accentColor}40` : '1px solid transparent',
+            background: activeMode === 'zone' ? `${accentColor}18` : 'transparent',
+            color: activeMode === 'zone' ? '#fff' : 'var(--text-secondary)',
+            fontWeight: activeMode === 'zone' ? 600 : 500,
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            boxShadow: activeMode === 'zone' ? `0 0 12px ${accentColor}20` : 'none'
           }}
         >
           World Timezone Converter

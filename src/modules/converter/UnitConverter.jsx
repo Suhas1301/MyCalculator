@@ -124,35 +124,35 @@ const converterUnits = {
 };
 
 const currencyDetails = {
-  USD: { country: 'United States', name: 'Dollar', symbol: '$' },
-  EUR: { country: 'European Union', name: 'Euro', symbol: '€' },
-  GBP: { country: 'United Kingdom', name: 'Pound Sterling', symbol: '£' },
-  INR: { country: 'India', name: 'Rupee', symbol: '₹' },
-  JPY: { country: 'Japan', name: 'Yen', symbol: '¥' },
-  CAD: { country: 'Canada', name: 'Dollar', symbol: 'C$' },
-  AUD: { country: 'Australia', name: 'Dollar', symbol: 'A$' },
-  CHF: { country: 'Switzerland', name: 'Franc', symbol: 'CHF' },
-  CNY: { country: 'China', name: 'Yuan', symbol: '¥' },
-  NZD: { country: 'New Zealand', name: 'Dollar', symbol: 'NZ$' },
-  AED: { country: 'United Arab Emirates', name: 'Dirham', symbol: 'د.إ' },
-  SAR: { country: 'Saudi Arabia', name: 'Riyal', symbol: 'ر.س' },
-  SGD: { country: 'Singapore', name: 'Dollar', symbol: 'S$' },
-  HKD: { country: 'Hong Kong', name: 'Dollar', symbol: 'HK$' },
-  SEK: { country: 'Sweden', name: 'Krona', symbol: 'kr' },
-  KRW: { country: 'South Korea', name: 'Won', symbol: '₩' },
-  MXN: { country: 'Mexico', name: 'Peso', symbol: '$' },
-  BRL: { country: 'Brazil', name: 'Real', symbol: 'R$' },
-  ZAR: { country: 'South Africa', name: 'Rand', symbol: 'R' },
-  RUB: { country: 'Russia', name: 'Ruble', symbol: '₽' },
-  TRY: { country: 'Turkey', name: 'Lira', symbol: '₺' },
-  NOK: { country: 'Norway', name: 'Krone', symbol: 'kr' },
-  DKK: { country: 'Denmark', name: 'Krone', symbol: 'kr' },
-  PLN: { country: 'Poland', name: 'Zloty', symbol: 'zł' },
-  THB: { country: 'Thailand', name: 'Baht', symbol: '฿' },
-  IDR: { country: 'Indonesia', name: 'Rupiah', symbol: 'Rp' },
-  MYR: { country: 'Malaysia', name: 'Ringgit', symbol: 'RM' },
-  PHP: { country: 'Philippines', name: 'Peso', symbol: '₱' },
-  ILS: { country: 'Israel', name: 'Shekel', symbol: '₪' }
+  USD: { country: 'United States', name: 'Dollar', symbol: '$', flag: '🇺🇸' },
+  EUR: { country: 'European Union', name: 'Euro', symbol: '€', flag: '🇪🇺' },
+  GBP: { country: 'United Kingdom', name: 'Pound Sterling', symbol: '£', flag: '🇬🇧' },
+  INR: { country: 'India', name: 'Rupee', symbol: '₹', flag: '🇮🇳' },
+  JPY: { country: 'Japan', name: 'Yen', symbol: '¥', flag: '🇯🇵' },
+  CAD: { country: 'Canada', name: 'Dollar', symbol: 'C$', flag: '🇨🇦' },
+  AUD: { country: 'Australia', name: 'Dollar', symbol: 'A$', flag: '🇦🇺' },
+  CHF: { country: 'Switzerland', name: 'Franc', symbol: 'CHF', flag: '🇨🇭' },
+  CNY: { country: 'China', name: 'Yuan', symbol: '¥', flag: '🇨🇳' },
+  NZD: { country: 'New Zealand', name: 'Dollar', symbol: 'NZ$', flag: '🇳🇿' },
+  AED: { country: 'United Arab Emirates', name: 'Dirham', symbol: 'د.إ', flag: '🇦🇪' },
+  SAR: { country: 'Saudi Arabia', name: 'Riyal', symbol: 'ر.س', flag: '🇸🇦' },
+  SGD: { country: 'Singapore', name: 'Dollar', symbol: 'S$', flag: '🇸🇬' },
+  HKD: { country: 'Hong Kong', name: 'Dollar', symbol: 'HK$', flag: '🇭🇰' },
+  SEK: { country: 'Sweden', name: 'Krona', symbol: 'kr', flag: '🇸🇪' },
+  KRW: { country: 'South Korea', name: 'Won', symbol: '₩', flag: '🇰🇷' },
+  MXN: { country: 'Mexico', name: 'Peso', symbol: '$', flag: '🇲🇽' },
+  BRL: { country: 'Brazil', name: 'Real', symbol: 'R$', flag: '🇧🇷' },
+  ZAR: { country: 'South Africa', name: 'Rand', symbol: 'R', flag: '🇿🇦' },
+  RUB: { country: 'Russia', name: 'Ruble', symbol: '₽', flag: '🇷🇺' },
+  TRY: { country: 'Turkey', name: 'Lira', symbol: '₺', flag: '🇹🇷' },
+  NOK: { country: 'Norway', name: 'Krone', symbol: 'kr', flag: '🇳🇴' },
+  DKK: { country: 'Denmark', name: 'Krone', symbol: 'kr', flag: '🇩🇰' },
+  PLN: { country: 'Poland', name: 'Zloty', symbol: 'zł', flag: '🇵🇱' },
+  THB: { country: 'Thailand', name: 'Baht', symbol: '฿', flag: '🇹🇭' },
+  IDR: { country: 'Indonesia', name: 'Rupiah', symbol: 'Rp', flag: '🇮🇩' },
+  MYR: { country: 'Malaysia', name: 'Ringgit', symbol: 'RM', flag: '🇲🇾' },
+  PHP: { country: 'Philippines', name: 'Peso', symbol: '₱', flag: '🇵🇭' },
+  ILS: { country: 'Israel', name: 'Shekel', symbol: '₪', flag: '🇮🇱' }
 };
 
 const cryptoDetails = {
@@ -171,7 +171,7 @@ const cryptoDetails = {
 const getDisplayName = (code) => {
   const details = currencyDetails[code];
   if (details) {
-    return `${details.country} (${code})`;
+    return `${details.flag} ${details.country} (${code})`;
   }
   return `${code} (${code})`;
 };
@@ -189,6 +189,9 @@ export default function UnitConverter() {
   const accentColor = getAccentColor('converter');
 
   const [activeCategory, setActiveCategory] = useState('length'); // length, weight, speed, digital, currency, temperature
+  const [isListView, setIsListView] = useState(false);
+  const [listPrimaryUnit, setListPrimaryUnit] = useState(null);
+  const [listPrimaryValue, setListPrimaryValue] = useState('1');
   
   // Input states
   const [valFrom, setValFrom] = useState('1');
@@ -305,6 +308,33 @@ export default function UnitConverter() {
     }
   };
 
+  const getConvertedValue = (inputStr, fromId, toId) => {
+    if (!inputStr || isNaN(parseFloat(inputStr))) return '';
+    if (fromId === toId) return inputStr;
+    const input = parseFloat(inputStr);
+
+    if (activeCategory === 'currency') {
+      const fromRate = currencyRates[fromId];
+      const toRate = currencyRates[toId];
+      if (!fromRate || !toRate) return '';
+      return Number(((input / fromRate) * toRate).toFixed(6)).toString();
+    } else if (activeCategory === 'crypto') {
+      const fromRate = currencyRates[fromId];
+      const toRate = currencyRates[toId];
+      if (!fromRate || !toRate) return '';
+      return Number(((input / fromRate) * toRate).toFixed(8)).toString();
+    } else if (activeCategory === 'temperature') {
+      return Number(convertTemperature(input, fromId, toId).toFixed(4)).toString();
+    } else {
+      const categoryData = converterUnits[activeCategory];
+      const unitFrom = categoryData.units[fromId];
+      const unitTo = categoryData.units[toId];
+      if (!unitFrom || !unitTo) return '';
+      const valInBase = input * unitFrom.factor;
+      return Number((valInBase / unitTo.factor).toFixed(6)).toString();
+    }
+  };
+
   const convertTemperature = (v, from, to) => {
     if (from === to) return v;
     let celsius = v;
@@ -368,6 +398,71 @@ export default function UnitConverter() {
     setValTo('');
     setUnitFromIndex(0);
     setUnitToIndex(1);
+    setListPrimaryValue('1');
+    setListPrimaryUnit(null);
+  };
+
+  const handleListInputChange = (val, unitId) => {
+    let cleanVal = val;
+    if (activeCategory !== 'temperature' && val !== '') {
+      const parsed = parseFloat(val);
+      if (parsed < 0) {
+        cleanVal = Math.abs(parsed).toString();
+      } else if (val.includes('-')) {
+        cleanVal = val.replace(/-/g, '');
+      }
+    }
+    setListPrimaryUnit(unitId);
+    setListPrimaryValue(cleanVal);
+  };
+
+  const renderListView = () => {
+    let units = [];
+    let initialPrimary = null;
+    if (activeCategory === 'currency') {
+      units = Object.keys(currencyRates).filter(c => currencyDetails[c]);
+      initialPrimary = 'USD';
+    } else if (activeCategory === 'crypto') {
+      units = Object.keys(cryptoDetails).filter(c => currencyRates[c]);
+      initialPrimary = 'BTC';
+    } else if (activeCategory === 'temperature') {
+      units = ['C', 'F', 'K'];
+      initialPrimary = 'C';
+    } else {
+      units = converterUnits[activeCategory]?.units.map((_, i) => i) || [];
+      initialPrimary = 0;
+    }
+
+    const primaryUnit = listPrimaryUnit !== null ? listPrimaryUnit : initialPrimary;
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '8px', overflowY: 'auto' }}>
+        {units.map(uId => {
+          const val = uId === primaryUnit ? listPrimaryValue : getConvertedValue(listPrimaryValue, primaryUnit, uId);
+          let label = '';
+          if (activeCategory === 'currency') label = getDisplayName(uId);
+          else if (activeCategory === 'crypto') label = getCryptoDisplayName(uId);
+          else if (activeCategory === 'temperature') {
+            label = uId === 'C' ? 'Celsius (°C)' : uId === 'F' ? 'Fahrenheit (°F)' : 'Kelvin (K)';
+          } else {
+            label = converterUnits[activeCategory].units[uId].name;
+          }
+
+          return (
+            <div key={uId} className="glass-panel" style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', background: 'rgba(5, 7, 12, 0.4)', gap: '16px', flexShrink: 0 }}>
+              <div style={{ flex: 1, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{label}</div>
+              <input
+                type="number"
+                value={val}
+                onChange={(e) => handleListInputChange(e.target.value, uId)}
+                className="glass-input math-mono"
+                style={{ width: '200px', padding: '8px 12px', fontSize: '1.2rem', fontWeight: 600, textAlign: 'right' }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   const categories = [
@@ -418,16 +513,15 @@ export default function UnitConverter() {
         <div 
           className="glass-panel"
           style={{
-            padding: '12px',
             background: 'rgba(16, 20, 35, 0.4)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '6px',
             overflowY: 'auto',
             height: '100%',
             boxSizing: 'border-box'
           }}
         >
+          <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {categories.map((cat) => {
             const Icon = cat.icon;
             const isSelected = activeCategory === cat.id;
@@ -458,6 +552,7 @@ export default function UnitConverter() {
               </button>
             );
           })}
+          </div>
         </div>
 
         {/* Content converter panel */}
@@ -474,15 +569,37 @@ export default function UnitConverter() {
             boxSizing: 'border-box'
           }}
         >
-          {/* Main Dual Converter Panels */}
-          <div 
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr auto 1fr',
-              alignItems: 'center',
-              gap: '16px'
-            }}
-          >
+          {/* Header with Mode Toggle */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+            <h3 style={{ fontSize: '1.2rem', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {React.createElement(categories.find(c => c.id === activeCategory)?.icon || Settings, { size: 20, style: { color: accentColor } })}
+              {categories.find(c => c.id === activeCategory)?.name || 'Converter'}
+            </h3>
+            <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '4px' }}>
+              <button 
+                onClick={() => setIsListView(false)}
+                style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: !isListView ? 'rgba(255,255,255,0.1)' : 'transparent', color: !isListView ? '#fff' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s' }}
+              >
+                Dual Panel
+              </button>
+              <button 
+                onClick={() => setIsListView(true)}
+                style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: isListView ? 'rgba(255,255,255,0.1)' : 'transparent', color: isListView ? '#fff' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s' }}
+              >
+                List View
+              </button>
+            </div>
+          </div>
+
+          {isListView ? renderListView() : (
+            <div 
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr auto 1fr',
+                alignItems: 'center',
+                gap: '16px'
+              }}
+            >
             {/* FROM panel */}
             <div 
               className="glass-panel"
@@ -1092,6 +1209,7 @@ export default function UnitConverter() {
               )}
             </div>
           </div>
+          )}
 
           {/* Currency loading states / instructions */}
           {activeCategory === 'currency' && (

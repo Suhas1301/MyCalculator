@@ -38,7 +38,7 @@
 .mode-btn.active {
   background: var(--color-scientific-glow);
   border-color: var(--color-scientific);
-  color: var(--color-scientific);
+  color: #fff;
 }
 
 .matrix-grid {

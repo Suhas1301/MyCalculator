@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  Calculator, 
-  LineChart, 
-  FlaskConical, 
-  Scale, 
-  Binary, 
-  TrendingUp, 
-  Zap, 
-  Clock, 
-  HeartPulse, 
-  Sparkles, 
-  BookOpen, 
+import {
+  Calculator,
+  LineChart,
+  FlaskConical,
+  Scale,
+  Binary,
+  TrendingUp,
+  Zap,
+  Clock,
+  HeartPulse,
+  Sparkles,
+  BookOpen,
   Sigma,
-  ChevronLeft, 
+  ChevronLeft,
   ChevronRight,
   Settings,
   History
@@ -40,7 +40,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside 
+    <aside
       className={`glass-panel sidebar-container ${collapsed ? 'collapsed' : 'expanded'}`}
       style={{
         display: 'flex',
@@ -57,7 +57,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
       }}
     >
       {/* Brand Header */}
-      <div 
+      <div
         className="sidebar-header"
         style={{
           display: 'flex',
@@ -69,7 +69,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
       >
         {!collapsed && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div 
+            <div
               style={{
                 width: '32px',
                 height: '32px',
@@ -94,7 +94,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
         )}
 
         {collapsed && (
-          <div 
+          <div
             style={{
               width: '36px',
               height: '36px',
@@ -114,7 +114,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
         )}
 
         {!collapsed && (
-          <button 
+          <button
             onClick={() => setCollapsed(true)}
             className="btn-glow"
             style={{
@@ -154,7 +154,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
       )}
 
       {/* Nav List */}
-      <nav 
+      <nav
         style={{
           flex: 1,
           padding: '12px 10px',
@@ -194,7 +194,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
             >
               {/* Active glow backing */}
               {isActive && (
-                <div 
+                <div
                   style={{
                     position: 'absolute',
                     top: '15%',
@@ -209,13 +209,13 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
                 />
               )}
 
-              <Icon 
-                size={20} 
-                style={{ 
+              <Icon
+                size={20}
+                style={{
                   color: isActive ? accentColor : 'var(--text-secondary)',
                   transition: 'color var(--transition-fast)',
                   flexShrink: 0
-                }} 
+                }}
               />
 
               {!collapsed && (
@@ -234,7 +234,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
       </nav>
 
       {/* Footer Settings & History */}
-      <div 
+      <div
         style={{
           padding: '12px 10px',
           borderTop: '1px solid var(--border-color)',

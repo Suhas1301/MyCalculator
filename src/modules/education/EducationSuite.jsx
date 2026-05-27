@@ -427,15 +427,17 @@ export default function EducationSuite() {
         <button
           onClick={() => setActiveTab('custom')}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: activeTab === 'custom' ? accentColor : 'transparent',
-            color: activeTab === 'custom' ? '#000' : 'var(--text-secondary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: activeTab === 'custom' ? `1px solid ${accentColor}40` : '1px solid transparent',
+            background: activeTab === 'custom' ? `${accentColor}18` : 'transparent',
+            color: activeTab === 'custom' ? '#fff' : 'var(--text-secondary)',
+            fontWeight: activeTab === 'custom' ? 600 : 500,
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            boxShadow: activeTab === 'custom' ? `0 0 12px ${accentColor}20` : 'none'
           }}
         >
           Custom Formula Builder
@@ -443,15 +445,17 @@ export default function EducationSuite() {
         <button
           onClick={() => setActiveTab('search')}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: activeTab === 'search' ? accentColor : 'transparent',
-            color: activeTab === 'search' ? '#000' : 'var(--text-secondary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: activeTab === 'search' ? `1px solid ${accentColor}40` : '1px solid transparent',
+            background: activeTab === 'search' ? `${accentColor}18` : 'transparent',
+            color: activeTab === 'search' ? '#fff' : 'var(--text-secondary)',
+            fontWeight: activeTab === 'search' ? 600 : 500,
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            boxShadow: activeTab === 'search' ? `0 0 12px ${accentColor}20` : 'none'
           }}
         >
           Formula Search Library
@@ -459,15 +463,17 @@ export default function EducationSuite() {
         <button
           onClick={() => setActiveTab('cheat')}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: activeTab === 'cheat' ? accentColor : 'transparent',
-            color: activeTab === 'cheat' ? '#000' : 'var(--text-secondary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: activeTab === 'cheat' ? `1px solid ${accentColor}40` : '1px solid transparent',
+            background: activeTab === 'cheat' ? `${accentColor}18` : 'transparent',
+            color: activeTab === 'cheat' ? '#fff' : 'var(--text-secondary)',
+            fontWeight: activeTab === 'cheat' ? 600 : 500,
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            boxShadow: activeTab === 'cheat' ? `0 0 12px ${accentColor}20` : 'none'
           }}
         >
           Formula Cheat-Sheets
@@ -475,15 +481,17 @@ export default function EducationSuite() {
         <button
           onClick={() => setActiveTab('quiz')}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: activeTab === 'quiz' ? accentColor : 'transparent',
-            color: activeTab === 'quiz' ? '#000' : 'var(--text-secondary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: activeTab === 'quiz' ? `1px solid ${accentColor}40` : '1px solid transparent',
+            background: activeTab === 'quiz' ? `${accentColor}18` : 'transparent',
+            color: activeTab === 'quiz' ? '#fff' : 'var(--text-secondary)',
+            fontWeight: activeTab === 'quiz' ? 600 : 500,
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            boxShadow: activeTab === 'quiz' ? `0 0 12px ${accentColor}20` : 'none'
           }}
         >
           Practice Quizzes

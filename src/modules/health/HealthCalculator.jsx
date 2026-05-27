@@ -177,15 +177,17 @@ export default function HealthCalculator() {
         <button
           onClick={() => setActiveTab('bmi')}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: activeTab === 'bmi' ? accentColor : 'transparent',
-            color: activeTab === 'bmi' ? '#000' : 'var(--text-secondary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: activeTab === 'bmi' ? `1px solid ${accentColor}40` : '1px solid transparent',
+            background: activeTab === 'bmi' ? `${accentColor}18` : 'transparent',
+            color: activeTab === 'bmi' ? '#fff' : 'var(--text-secondary)',
+            fontWeight: activeTab === 'bmi' ? 600 : 500,
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            boxShadow: activeTab === 'bmi' ? `0 0 12px ${accentColor}20` : 'none'
           }}
         >
           Body Mass Index (BMI)
@@ -193,15 +195,17 @@ export default function HealthCalculator() {
         <button
           onClick={() => setActiveTab('bmr')}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: activeTab === 'bmr' ? accentColor : 'transparent',
-            color: activeTab === 'bmr' ? '#000' : 'var(--text-secondary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: activeTab === 'bmr' ? `1px solid ${accentColor}40` : '1px solid transparent',
+            background: activeTab === 'bmr' ? `${accentColor}18` : 'transparent',
+            color: activeTab === 'bmr' ? '#fff' : 'var(--text-secondary)',
+            fontWeight: activeTab === 'bmr' ? 600 : 500,
+            fontSize: '0.8rem',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            boxShadow: activeTab === 'bmr' ? `0 0 12px ${accentColor}20` : 'none'
           }}
         >
           BMR & Calories

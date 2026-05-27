@@ -232,15 +232,17 @@ export default function FinancialCalculator() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                border: 'none',
-                background: isActive ? accentColor : 'transparent',
-                color: isActive ? '#000' : 'var(--text-secondary)',
-                fontWeight: 600,
-                fontSize: '0.85rem',
+                padding: '10px 16px',
+                borderRadius: '8px',
+                border: isActive ? `1px solid ${accentColor}40` : '1px solid transparent',
+                background: isActive ? `${accentColor}18` : 'transparent',
+                color: isActive ? '#fff' : 'var(--text-secondary)',
+                fontWeight: isActive ? 600 : 500,
+                fontSize: '0.8rem',
                 cursor: 'pointer',
-                transition: 'all var(--transition-fast)'
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap',
+                boxShadow: isActive ? `0 0 12px ${accentColor}20` : 'none'
               }}
             >
               <Icon size={16} />
