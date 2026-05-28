@@ -169,7 +169,7 @@ export default function AiSearchPanel() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>AI Helper & Search</h2>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Natural language equation solver and global constants search directory</p>
+
         </div>
         <button 
           onClick={() => setShowKeyPanel(!showKeyPanel)}

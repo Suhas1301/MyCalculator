@@ -35,13 +35,27 @@ const modules = [
   { id: 'formulas', name: 'Formula Search & Solver', icon: Sigma, desc: 'Integral, Derivative, Trig & Physics' }
 ];
 
-export default function Sidebar({ onOpenSettings, onOpenHistory }) {
+export default function Sidebar({ onOpenSettings, onOpenHistory, isMobileOpen, onCloseMobile }) {
   const { activeModule, setActiveModule, getAccentColor } = useApp();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside
-      className={`glass-panel sidebar-container ${collapsed ? 'collapsed' : 'expanded'}`}
+    <>
+      {/* Mobile Backdrop */}
+      {isMobileOpen && (
+        <div
+          onClick={onCloseMobile}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0,0,0,0.6)',
+            zIndex: 999,
+            backdropFilter: 'blur(4px)'
+          }}
+        />
+      )}
+      <aside
+        className={`glass-panel sidebar-container ${collapsed ? 'collapsed' : 'expanded'} ${isMobileOpen ? 'mobile-open' : ''}`}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -113,7 +127,7 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
           </div>
         )}
 
-        {!collapsed && (
+        {!collapsed && !isMobileOpen && (
           <button
             onClick={() => setCollapsed(true)}
             className="btn-glow"
@@ -288,5 +302,6 @@ export default function Sidebar({ onOpenSettings, onOpenHistory }) {
         </button>
       </div>
     </aside>
+    </>
   );
 }

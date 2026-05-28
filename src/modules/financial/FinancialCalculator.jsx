@@ -259,7 +259,7 @@ export default function FinancialCalculator() {
       {/* Title */}
       <div>
         <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Financial Calculators</h2>
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>High-fidelity wealth modeling, interest accruals, and interactive schedules</p>
+
       </div>
 
       {/* Tabs */}

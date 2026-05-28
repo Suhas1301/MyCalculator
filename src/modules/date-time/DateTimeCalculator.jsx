@@ -106,7 +106,7 @@ export default function DateTimeCalculator() {
       {/* Title */}
       <div>
         <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Date & Time Calculator</h2>
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Precise chronological planners and global timezone synchronizers</p>
+
       </div>
 
       {/* Select Mode */}

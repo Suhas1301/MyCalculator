@@ -35,6 +35,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
+  appearance: textfield;
 }
 
 /* Beautiful dynamic neon aura blobs in the background */
@@ -223,74 +224,88 @@ input[type="number"] {
     flex-direction: column !important;
   }
   
-  /* Sidebar responsive bottom nav style */
+  /* Sidebar responsive drawer style */
   .sidebar-container {
-    width: calc(100% - 24px) !important;
-    height: 70px !important;
-    margin: 12px 12px 0 12px !important;
-    flex-direction: row !important;
-    padding: 0 10px !important;
-    justify-content: flex-start !important;
-    align-items: center !important;
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    height: 100vh !important;
+    width: 280px !important;
+    margin: 0 !important;
+    z-index: 1000 !important;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    flex-direction: column !important;
+    border-radius: 0 16px 16px 0 !important;
+  }
+
+  .sidebar-container.mobile-open {
+    transform: translateX(0);
   }
   
-  /* Hide the huge brand header */
+  /* Ensure header shows in mobile drawer */
   .sidebar-header {
-    display: none !important;
+    display: flex !important;
+    justify-content: space-between !important;
   }
   
   /* Buttons container inside sidebar */
   .sidebar-container nav,
   .sidebar-container > div:last-child {
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    height: 100% !important;
-    padding: 0 !important;
-    align-items: center !important;
-    border: none !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    padding: 10px !important;
+    align-items: stretch !important;
   }
   
-  /* Hide scrollbar on the horizontal nav */
+  /* Show scrollbar when needed */
   .sidebar-container nav::-webkit-scrollbar,
   .sidebar-container > div:last-child::-webkit-scrollbar {
-    display: none !important;
+    display: block !important;
   }
   
   .sidebar-container button {
-    min-width: 50px !important;
-    width: 50px !important;
-    height: 50px !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    margin: 0 5px !important;
-    padding: 5px !important;
-    gap: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 44px !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    margin: 4px 0 !important;
+    padding: 10px 14px !important;
+    gap: 14px !important;
   }
   
-  /* Hide text, show only icons in the bottom nav */
+  /* Show text alongside icons in the drawer */
   .sidebar-container button > div:has(span),
   .sidebar-container button span, 
   .sidebar-container button p {
-    display: none !important;
+    display: block !important;
   }
 
   /* Main content adjusts height */
   main.glass-panel {
     margin: 12px !important;
-    height: calc(100vh - 94px) !important;
+    height: calc(100vh - 24px) !important;
     overflow-y: auto !important;
+  }
+  
+  /* Shift module headers to make room for absolute floating menu button */
+  .module-wrapper > div > div:first-child > div:first-child,
+  .module-wrapper > div > div:first-child > h2 {
+    margin-left: 48px !important;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px) and (orientation: portrait) {
   /* Override dynamic flex layouts */
   div[style*="1fr 360px"],
   div[style*="1fr 340px"],
   div[style*="1fr 320px"],
   div[style*="1fr 300px"],
   div[style*="240px 1fr"],
+  div[style*="260px 1fr"],
+  div[style*="1fr auto 1fr"],
   .grid-mobile-1fr {
     grid-template-columns: 1fr !important;
     height: auto !important;
@@ -301,7 +316,9 @@ input[type="number"] {
   div[style*="1fr 340px"] > div,
   div[style*="1fr 320px"] > div,
   div[style*="1fr 300px"] > div,
-  div[style*="240px 1fr"] > div {
+  div[style*="240px 1fr"] > div,
+  div[style*="260px 1fr"] > div,
+  div[style*="1fr auto 1fr"] > div {
     max-height: none !important;
   }
 
@@ -309,5 +326,22 @@ input[type="number"] {
   .glass-panel.animate-scale {
     width: calc(100% - 48px) !important;
     right: 24px !important;
+  }
+
+  /* Unit Converter sidebar horizontal on mobile */
+  .converter-sidebar {
+    height: auto !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding-bottom: 4px !important;
+  }
+  .converter-sidebar-inner {
+    flex-direction: row !important;
+    width: max-content;
+  }
+  .converter-sidebar-inner button {
+    width: auto !important;
+    white-space: nowrap;
   }
 }

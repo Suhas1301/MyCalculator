@@ -49,7 +49,7 @@ export default function GraphingCalculator() {
 
     const step = 1; // 1 unit per grid line
     const gridSpacing = step * scale;
-    
+
     // Vertical grid lines
     const startX = pixelCenterX % gridSpacing;
     for (let x = startX; x < width; x += gridSpacing) {
@@ -57,7 +57,7 @@ export default function GraphingCalculator() {
       ctx.moveTo(x, 0);
       ctx.lineTo(x, height);
       ctx.stroke();
-      
+
       // Label math coordinates on X axis
       const val = ((x - pixelCenterX) / scale).toFixed(0);
       if (val !== '0') {
@@ -72,7 +72,7 @@ export default function GraphingCalculator() {
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);
       ctx.stroke();
-      
+
       // Label math coordinates on Y axis
       const val = (-(y - pixelCenterY) / scale).toFixed(0);
       if (val !== '0') {
@@ -84,7 +84,7 @@ export default function GraphingCalculator() {
     // Draw Primary Axes
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
     ctx.lineWidth = 2;
-    
+
     // Y-Axis
     ctx.beginPath();
     ctx.moveTo(pixelCenterX, 0);
@@ -96,7 +96,7 @@ export default function GraphingCalculator() {
     ctx.moveTo(0, pixelCenterY);
     ctx.lineTo(width, pixelCenterY);
     ctx.stroke();
-    
+
     // Label origin
     ctx.textAlign = 'right';
     ctx.fillText('0', pixelCenterX - 6, pixelCenterY + 10);
@@ -104,26 +104,26 @@ export default function GraphingCalculator() {
     // Plot Active Equations
     equations.forEach(eq => {
       if (!eq.active) return;
-      
+
       ctx.strokeStyle = eq.color;
       ctx.lineWidth = 2.5;
       ctx.beginPath();
-      
+
       let isFirst = true;
 
       // Plot line by iterating over each pixel on the X axis
       for (let pixelX = 0; pixelX < width; pixelX += 2) {
         // Convert screen pixelX to math coordinate x
         const x = (pixelX - pixelCenterX) / scale;
-        
+
         try {
           // Evaluate math parser for x
           const y = evaluateExpression(eq.text, { x });
-          
+
           if (!isNaN(y) && isFinite(y)) {
             // Convert math coordinate y to screen pixelY
             const pixelY = pixelCenterY - y * scale;
-            
+
             // Draw lines inside canvas viewport
             if (pixelY >= -100 && pixelY <= height + 100) {
               if (isFirst) {
@@ -150,7 +150,7 @@ export default function GraphingCalculator() {
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
       ctx.setLineDash([4, 4]);
       ctx.lineWidth = 1;
-      
+
       // Vertical crosshair
       ctx.beginPath();
       ctx.moveTo(mousePos.x, 0);
@@ -163,28 +163,28 @@ export default function GraphingCalculator() {
       ctx.lineTo(width, mousePos.y);
       ctx.stroke();
       ctx.setLineDash([]); // Reset
-      
+
       // Floating coordinates card
       const label = `(${mousePos.mathX.toFixed(2)}, ${mousePos.mathY.toFixed(2)})`;
       ctx.fillStyle = 'rgba(16, 20, 35, 0.85)';
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
       ctx.lineWidth = 1;
-      
+
       const textWidth = ctx.measureText(label).width;
       const cardW = textWidth + 24;
       const cardH = 26;
       let cardX = mousePos.x + 15;
       let cardY = mousePos.y - 15;
-      
+
       // Boundary check for coordinates popup
       if (cardX + cardW > width) cardX = mousePos.x - cardW - 15;
       if (cardY - cardH < 0) cardY = mousePos.y + 15;
-      
+
       ctx.beginPath();
       ctx.roundRect(cardX, cardY - cardH, cardW, cardH, 6);
       ctx.fill();
       ctx.stroke();
-      
+
       ctx.fillStyle = '#fff';
       ctx.font = '11px var(--font-mono)';
       ctx.textAlign = 'center';
@@ -202,7 +202,7 @@ export default function GraphingCalculator() {
       canvas.height = canvas.parentElement.clientHeight || 450;
       draw();
     };
-    
+
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -221,7 +221,7 @@ export default function GraphingCalculator() {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     setIsDragging(true);
     dragStart.current = { x, y };
     centerStart.current = { ...center };
@@ -237,7 +237,7 @@ export default function GraphingCalculator() {
     if (isDragging) {
       const deltaX = x - dragStart.current.x;
       const deltaY = y - dragStart.current.y;
-      
+
       setCenter({
         x: centerStart.current.x - deltaX / scale,
         y: centerStart.current.y + deltaY / scale
@@ -248,7 +248,7 @@ export default function GraphingCalculator() {
       const pixelCenterY = canvas.height / 2 + center.y * scale;
       const mathX = (x - pixelCenterX) / scale;
       const mathY = -(y - pixelCenterY) / scale;
-      
+
       setMousePos({ x, y, mathX, mathY });
     }
   };
@@ -270,7 +270,7 @@ export default function GraphingCalculator() {
   const addEquation = (e) => {
     e.preventDefault();
     if (!newEqText.trim()) return;
-    
+
     const nextColor = colorsPreset[equations.length % colorsPreset.length];
     const newEq = {
       id: Date.now().toString(),
@@ -278,7 +278,7 @@ export default function GraphingCalculator() {
       color: nextColor,
       active: true
     };
-    
+
     setEquations(prev => [...prev, newEq]);
     setNewEqText('');
   };
@@ -292,7 +292,7 @@ export default function GraphingCalculator() {
   };
 
   return (
-    <div 
+    <div
       className="animate-slide"
       style={{
         display: 'flex',
@@ -308,11 +308,9 @@ export default function GraphingCalculator() {
           <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>
             2D Equation Grapher
           </h2>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-            Interactive graphing with canvas rendering
-          </p>
+
         </div>
-        
+
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button onClick={() => handleZoom(1.2)} className="btn-glow" style={{ padding: '6px 10px', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', borderRadius: '6px' }}>
             <ZoomIn size={14} style={{ color: accentColor }} /> Zoom In
@@ -327,7 +325,7 @@ export default function GraphingCalculator() {
       </div>
 
       {/* Main Graph Panel Grid */}
-      <div 
+      <div
         style={{
           display: 'grid',
           gridTemplateColumns: '320px 1fr',
@@ -338,7 +336,7 @@ export default function GraphingCalculator() {
         className="grid-mobile-1fr"
       >
         {/* Equations Input Panel */}
-        <div 
+        <div
           className="glass-panel"
           style={{
             padding: '16px',
@@ -357,15 +355,15 @@ export default function GraphingCalculator() {
           {/* Add Equation Form */}
           <form onSubmit={addEquation} style={{ display: 'flex', gap: '8px' }}>
             <div style={{ position: 'relative', flex: 1 }}>
-              <span 
-                style={{ 
-                  position: 'absolute', 
-                  left: '10px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
+              <span
+                style={{
+                  position: 'absolute',
+                  left: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
                   fontSize: '0.85rem',
                   fontWeight: 600,
-                  color: accentColor 
+                  color: accentColor
                 }}
               >
                 y =
@@ -410,7 +408,7 @@ export default function GraphingCalculator() {
               </div>
             ) : (
               equations.map((eq) => (
-                <div 
+                <div
                   key={eq.id}
                   style={{
                     padding: '12px',
@@ -425,22 +423,22 @@ export default function GraphingCalculator() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', overflow: 'hidden', flex: 1 }}>
-                    <div 
-                      style={{ 
-                        width: '12px', 
-                        height: '12px', 
-                        borderRadius: '50%', 
+                    <div
+                      style={{
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
                         background: eq.color,
                         boxShadow: `0 0 10px ${eq.color}`,
-                        flexShrink: 0 
-                      }} 
+                        flexShrink: 0
+                      }}
                     />
                     <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                      <span 
-                        className="math-mono" 
-                        style={{ 
-                          fontSize: '0.85rem', 
-                          fontWeight: 600, 
+                      <span
+                        className="math-mono"
+                        style={{
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
                           color: '#fff',
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
@@ -497,26 +495,11 @@ export default function GraphingCalculator() {
             )}
           </div>
 
-          <div 
-            style={{ 
-              display: 'flex', 
-              gap: '6px', 
-              padding: '10px', 
-              background: 'rgba(255,255,255,0.01)', 
-              borderRadius: '8px', 
-              border: '1px solid rgba(255,255,255,0.02)',
-              alignItems: 'flex-start'
-            }}
-          >
-            <Info size={14} style={{ color: accentColor, marginTop: '2px', flexShrink: 0 }} />
-            <p style={{ fontSize: '0.68rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.4 }}>
-              <strong>Hint:</strong> Drag the graph to pan around. Scroll or use the zoom buttons to change coordinate scales. Hover to view grid coordinate values.
-            </p>
-          </div>
+
         </div>
 
         {/* Interactive Plot Canvas Panel */}
-        <div 
+        <div
           className="glass-panel"
           style={{
             position: 'relative',
@@ -531,13 +514,13 @@ export default function GraphingCalculator() {
           onMouseLeave={() => { setIsHovering(false); setIsDragging(false); }}
           onMouseEnter={() => setIsHovering(true)}
         >
-          <canvas 
-            ref={canvasRef} 
-            style={{ 
-              display: 'block', 
-              width: '100%', 
-              height: '100%' 
-            }} 
+          <canvas
+            ref={canvasRef}
+            style={{
+              display: 'block',
+              width: '100%',
+              height: '100%'
+            }}
           />
         </div>
       </div>

@@ -14,7 +14,7 @@ import HealthCalculator from './modules/health/HealthCalculator';
 import AiSearchPanel from './modules/ai-search/AiSearchPanel';
 import EducationSuite from './modules/education/EducationSuite';
 import FormulaSearch from './modules/formulas/FormulaSearch';
-import { X, Trash2, Sliders, Check, ChevronDown, Search } from 'lucide-react';
+import { X, Trash2, Sliders, Check, ChevronDown, Search, Menu } from 'lucide-react';
 import { currencyDetails, getDisplayName, cryptoDetails, getCryptoDisplayName } from './utils/CurrencyData';
 
 function DashboardContent() {
@@ -23,6 +23,15 @@ function DashboardContent() {
   // Overlay draws states
   const [showSettings, setShowSettings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const accentColor = getAccentColor(activeModule);
 
   // Custom Dropdown States for Settings
@@ -87,8 +96,10 @@ function DashboardContent() {
 
       {/* Sidebar Nav */}
       <Sidebar 
-        onOpenSettings={() => { setShowSettings(true); setShowHistory(false); }} 
-        onOpenHistory={() => { setShowHistory(true); setShowSettings(false); }} 
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        onOpenSettings={() => { setShowSettings(true); setShowHistory(false); setIsMobileSidebarOpen(false); }} 
+        onOpenHistory={() => { setShowHistory(true); setShowSettings(false); setIsMobileSidebarOpen(false); }} 
       />
 
       {/* Main Content Dashboard */}
@@ -98,7 +109,7 @@ function DashboardContent() {
           flex: 1,
           margin: '12px',
           marginLeft: '6px',
-          padding: '24px',
+          padding: isMobile ? '12px' : '24px',
           display: 'flex',
           flexDirection: 'column',
           height: 'calc(100vh - 24px)',
@@ -107,8 +118,27 @@ function DashboardContent() {
           position: 'relative'
         }}
       >
+        {isMobile && (
+          <button 
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="btn-glow"
+            style={{
+              position: 'absolute',
+              top: '19px',
+              left: '18px',
+              zIndex: 50,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+              color: '#fff', borderRadius: '8px', padding: '6px 8px', cursor: 'pointer'
+            }}
+            title="Menu"
+          >
+            <Menu size={22} />
+          </button>
+        )}
+
         {/* Active Module Panel Render */}
-        <div style={{ flex: 1, height: '100%', minHeight: 0 }}>
+        <div className="module-wrapper" style={{ flex: 1, height: '100%', minHeight: 0 }}>
           {renderActiveModule()}
         </div>
 

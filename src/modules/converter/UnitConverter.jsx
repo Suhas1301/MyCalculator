@@ -136,15 +136,15 @@ export default function UnitConverter() {
   const [isListView, setIsListView] = useState(false);
   const [listPrimaryUnit, setListPrimaryUnit] = useState(null);
   const [listPrimaryValue, setListPrimaryValue] = useState('1');
-  
+
   // Input states
   const [valFrom, setValFrom] = useState('1');
   const [valTo, setValTo] = useState('');
-  
+
   // Unit selections states
   const [unitFromIndex, setUnitFromIndex] = useState(0);
   const [unitToIndex, setUnitToIndex] = useState(1);
-  
+
   // Currency units selectors
   const [curFrom, setCurFrom] = useState(settings?.defaultCurrencyBase || 'USD');
   const [curTo, setCurTo] = useState('EUR');
@@ -198,7 +198,7 @@ export default function UnitConverter() {
     if (activeCategory === 'currency') {
       const fromRate = currencyRates[curFrom];
       const toRate = currencyRates[curTo];
-      
+
       if (direction === 'from') {
         const result = (input / fromRate) * toRate;
         setValTo(Number(result.toFixed(6)).toString());
@@ -206,12 +206,12 @@ export default function UnitConverter() {
         const result = (input / toRate) * fromRate;
         setValFrom(Number(result.toFixed(6)).toString());
       }
-    } 
-    
+    }
+
     else if (activeCategory === 'crypto') {
       const fromRate = currencyRates[cryptoFrom];
       const toRate = currencyRates[cryptoTo];
-      
+
       if (direction === 'from') {
         const result = (input / fromRate) * toRate;
         setValTo(Number(result.toFixed(8)).toString());
@@ -219,23 +219,23 @@ export default function UnitConverter() {
         const result = (input / toRate) * fromRate;
         setValFrom(Number(result.toFixed(8)).toString());
       }
-    } 
-    
+    }
+
     else if (activeCategory === 'temperature') {
       if (direction === 'from') {
         setValTo(Number(convertTemperature(input, tempFrom, tempTo).toFixed(4)).toString());
       } else {
         setValFrom(Number(convertTemperature(input, tempTo, tempFrom).toFixed(4)).toString());
       }
-    } 
-    
+    }
+
     else {
       // Normal multiplier categories
       const categoryData = converterUnits[activeCategory];
       if (!categoryData) return;
       const unitFrom = categoryData.units[unitFromIndex];
       const unitTo = categoryData.units[unitToIndex];
-      
+
       if (!unitFrom || !unitTo) return;
 
       if (direction === 'from') {
@@ -282,7 +282,7 @@ export default function UnitConverter() {
   const convertTemperature = (v, from, to) => {
     if (from === to) return v;
     let celsius = v;
-    
+
     // Convert from origin to Celsius
     if (from === 'F') celsius = (v - 32) / 1.8;
     if (from === 'K') celsius = v - 273.15;
@@ -303,7 +303,7 @@ export default function UnitConverter() {
         cleanVal = val.replace(/-/g, '');
       }
     }
-    
+
     if (direction === 'from') {
       setValFrom(cleanVal);
       convertValue(cleanVal, 'from');
@@ -425,7 +425,7 @@ export default function UnitConverter() {
   ];
 
   return (
-    <div 
+    <div
       className="animate-slide"
       style={{
         display: 'flex',
@@ -439,12 +439,11 @@ export default function UnitConverter() {
     >
       {/* Title */}
       <div>
-        <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Universal Converter Engine</h2>
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Precise dimensional calculations and currency conversions</p>
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Unit Converter</h2>
       </div>
 
       {/* Main interface layout */}
-      <div 
+      <div
         style={{
           display: 'grid',
           gridTemplateColumns: '260px 1fr',
@@ -454,8 +453,8 @@ export default function UnitConverter() {
         }}
       >
         {/* Sidebar categories picker */}
-        <div 
-          className="glass-panel"
+        <div
+          className="glass-panel converter-sidebar"
           style={{
             background: 'rgba(16, 20, 35, 0.4)',
             display: 'flex',
@@ -465,42 +464,42 @@ export default function UnitConverter() {
             boxSizing: 'border-box'
           }}
         >
-          <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            const isSelected = activeCategory === cat.id;
+          <div className="converter-sidebar-inner" style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {categories.map((cat) => {
+              const Icon = cat.icon;
+              const isSelected = activeCategory === cat.id;
 
-            return (
-              <button
-                key={cat.id}
-                onClick={() => resetSelection(cat.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  width: '100%',
-                  padding: '12px 14px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  background: isSelected ? 'rgba(255,255,255,0.03)' : 'transparent',
-                  borderLeft: isSelected ? `3px solid ${accentColor}` : '3px solid transparent',
-                  color: isSelected ? '#fff' : 'var(--text-secondary)',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  transition: 'all var(--transition-fast)'
-                }}
-                className="sidebar-item-btn"
-              >
-                <Icon size={18} style={{ color: isSelected ? accentColor : 'var(--text-secondary)' }} />
-                <span style={{ fontSize: '0.85rem', fontWeight: isSelected ? 600 : 500 }}>{cat.name}</span>
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => resetSelection(cat.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: isSelected ? 'rgba(255,255,255,0.03)' : 'transparent',
+                    borderLeft: isSelected ? `3px solid ${accentColor}` : '3px solid transparent',
+                    color: isSelected ? '#fff' : 'var(--text-secondary)',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    transition: 'all var(--transition-fast)'
+                  }}
+                  className="sidebar-item-btn"
+                >
+                  <Icon size={18} style={{ color: isSelected ? accentColor : 'var(--text-secondary)' }} />
+                  <span style={{ fontSize: '0.85rem', fontWeight: isSelected ? 600 : 500 }}>{cat.name}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Content converter panel */}
-        <div 
+        <div
           className="glass-panel"
           style={{
             padding: '24px',
@@ -520,13 +519,13 @@ export default function UnitConverter() {
               {categories.find(c => c.id === activeCategory)?.name || 'Converter'}
             </h3>
             <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '4px' }}>
-              <button 
+              <button
                 onClick={() => setIsListView(false)}
                 style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: !isListView ? 'rgba(255,255,255,0.1)' : 'transparent', color: !isListView ? '#fff' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s' }}
               >
                 Dual Panel
               </button>
-              <button 
+              <button
                 onClick={() => setIsListView(true)}
                 style={{ padding: '6px 12px', borderRadius: '6px', border: 'none', background: isListView ? 'rgba(255,255,255,0.1)' : 'transparent', color: isListView ? '#fff' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s' }}
               >
@@ -536,7 +535,7 @@ export default function UnitConverter() {
           </div>
 
           {isListView ? renderListView() : (
-            <div 
+            <div
               style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr auto 1fr',
@@ -544,620 +543,622 @@ export default function UnitConverter() {
                 gap: '16px'
               }}
             >
-            {/* FROM panel */}
-            <div 
-              className="glass-panel"
-              style={{
-                padding: '20px',
-                background: 'rgba(5, 7, 12, 0.4)',
-                border: '1px solid rgba(255,255,255,0.04)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px'
-              }}
-            >
-              <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', fontWeight: 600 }}>Convert From</span>
-              
-              {/* Numeric input */}
-              <input
-                type="number"
-                value={valFrom}
-                onChange={(e) => handleInputChange(e.target.value, 'from')}
-                className="glass-input math-mono"
+              {/* FROM panel */}
+              <div
+                className="glass-panel"
                 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 600,
-                  width: '100%',
-                  padding: '8px 12px'
+                  padding: '20px',
+                  background: 'rgba(5, 7, 12, 0.4)',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
                 }}
-              />
+              >
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', fontWeight: 600 }}>Convert From</span>
 
-              {/* Selector according to category */}
-              {activeCategory === 'currency' ? (
-                <div ref={dropdownFromRef} style={{ position: 'relative', width: '100%' }}>
-                  <button
-                    onClick={() => setIsOpenFrom(!isOpenFrom)}
-                    className="glass-input"
-                    style={{
-                      width: '100%',
-                      cursor: 'pointer',
-                      fontSize: '0.88rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '10px 14px',
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      textAlign: 'left'
-                    }}
-                  >
-                    <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                      {getDisplayName(curFrom)}
-                    </span>
-                    <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
-                  </button>
-                  
-                  {isOpenFrom && (
-                    <div
-                      className="glass-panel"
+                {/* Numeric input */}
+                <input
+                  type="number"
+                  value={valFrom}
+                  onChange={(e) => handleInputChange(e.target.value, 'from')}
+                  className="glass-input math-mono"
+                  style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 600,
+                    width: '100%',
+                    padding: '8px 12px'
+                  }}
+                />
+
+                {/* Selector according to category */}
+                {activeCategory === 'currency' ? (
+                  <div ref={dropdownFromRef} style={{ position: 'relative', width: '100%' }}>
+                    <button
+                      onClick={() => setIsOpenFrom(!isOpenFrom)}
+                      className="glass-input"
                       style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        marginTop: '6px',
-                        background: 'rgba(10, 12, 22, 0.96)',
-                        backdropFilter: 'blur(16px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        maxHeight: '260px',
-                        overflowY: 'auto',
-                        zIndex: 100,
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                        width: '100%',
+                        cursor: 'pointer',
+                        fontSize: '0.88rem',
                         display: 'flex',
-                        flexDirection: 'column'
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 14px',
+                        background: 'rgba(255,255,255,0.02)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        textAlign: 'left'
                       }}
                     >
-                      {/* Search Bar */}
-                      <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
-                        <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
-                        <input
-                          type="text"
-                          placeholder="Search currency or country..."
-                          value={searchQueryFrom}
-                          onChange={(e) => setSearchQueryFrom(e.target.value)}
-                          className="glass-input"
-                          style={{
-                            flex: 1,
-                            fontSize: '0.8rem',
-                            padding: '4px 8px',
-                            background: 'rgba(255,255,255,0.02)',
-                            border: 'none',
-                            outline: 'none'
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </div>
-                      
-                      {/* Scrollable list */}
-                      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
-                        {Object.keys(currencyRates)
-                          .filter(c => currencyDetails[c] !== undefined)
-                          .filter(c => {
-                            const details = currencyDetails[c];
-                            const query = searchQueryFrom.toLowerCase();
-                            if (!query) return true;
-                            if (c.toLowerCase().includes(query)) return true;
-                            if (details) {
-                              return details.country.toLowerCase().includes(query) || details.name.toLowerCase().includes(query);
-                            }
-                            return false;
-                          })
-                          .map(c => {
-                            const isSel = curFrom === c;
-                            const details = currencyDetails[c];
-                            return (
-                              <button
-                                key={c}
-                                onClick={() => {
-                                  setCurFrom(c);
-                                  setIsOpenFrom(false);
-                                  setSearchQueryFrom('');
-                                }}
-                                style={{
-                                  padding: '8px 12px',
-                                  background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-                                  border: 'none',
-                                  color: isSel ? accentColor : '#fff',
-                                  fontSize: '0.82rem',
-                                  textAlign: 'left',
-                                  cursor: 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'space-between',
-                                  transition: 'all var(--transition-fast)'
-                                }}
-                                className="btn-glow"
-                              >
-                                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                                  {getDisplayName(c)}
-                                </span>
-                                {details && (
-                                  <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                                    {details.symbol}
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {getDisplayName(curFrom)}
+                      </span>
+                      <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
+                    </button>
+
+                    {isOpenFrom && (
+                      <div
+                        className="glass-panel"
+                        style={{
+                          position: 'absolute',
+                          top: '100%',
+                          left: 0,
+                          right: 0,
+                          marginTop: '6px',
+                          background: 'rgba(10, 12, 22, 0.96)',
+                          backdropFilter: 'blur(16px)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '12px',
+                          maxHeight: '260px',
+                          overflowY: 'auto',
+                          zIndex: 100,
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        {/* Search Bar */}
+                        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
+                          <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
+                          <input
+                            type="text"
+                            placeholder="Search currency or country..."
+                            value={searchQueryFrom}
+                            onChange={(e) => setSearchQueryFrom(e.target.value)}
+                            className="glass-input"
+                            style={{
+                              flex: 1,
+                              fontSize: '0.8rem',
+                              padding: '4px 8px',
+                              background: 'rgba(255,255,255,0.02)',
+                              border: 'none',
+                              outline: 'none'
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </div>
+
+                        {/* Scrollable list */}
+                        <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
+                          {Object.keys(currencyRates)
+                            .filter(c => currencyDetails[c] !== undefined)
+                            .filter(c => {
+                              const details = currencyDetails[c];
+                              const query = searchQueryFrom.toLowerCase();
+                              if (!query) return true;
+                              if (c.toLowerCase().includes(query)) return true;
+                              if (details) {
+                                return details.country.toLowerCase().includes(query) || details.name.toLowerCase().includes(query);
+                              }
+                              return false;
+                            })
+                            .map(c => {
+                              const isSel = curFrom === c;
+                              const details = currencyDetails[c];
+                              return (
+                                <button
+                                  key={c}
+                                  onClick={() => {
+                                    setCurFrom(c);
+                                    setIsOpenFrom(false);
+                                    setSearchQueryFrom('');
+                                  }}
+                                  style={{
+                                    padding: '8px 12px',
+                                    background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                                    border: 'none',
+                                    color: isSel ? accentColor : '#fff',
+                                    fontSize: '0.82rem',
+                                    textAlign: 'left',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    transition: 'all var(--transition-fast)'
+                                  }}
+                                  className="btn-glow"
+                                >
+                                  <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                    {getDisplayName(c)}
                                   </span>
-                                )}
-                              </button>
-                            );
-                          })}
+                                  {details && (
+                                    <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                      {details.symbol}
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ) : activeCategory === 'crypto' ? (
-                <div ref={dropdownFromRef} style={{ position: 'relative', width: '100%' }}>
-                  <button
-                    onClick={() => setIsOpenFrom(!isOpenFrom)}
-                    className="glass-input"
-                    style={{
-                      width: '100%',
-                      cursor: 'pointer',
-                      fontSize: '0.88rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '10px 14px',
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      textAlign: 'left'
-                    }}
-                  >
-                    <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                      {getCryptoDisplayName(cryptoFrom)}
-                    </span>
-                    <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
-                  </button>
-                  
-                  {isOpenFrom && (
-                    <div
-                      className="glass-panel"
+                    )}
+                  </div>
+                ) : activeCategory === 'crypto' ? (
+                  <div ref={dropdownFromRef} style={{ position: 'relative', width: '100%' }}>
+                    <button
+                      onClick={() => setIsOpenFrom(!isOpenFrom)}
+                      className="glass-input"
                       style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        marginTop: '6px',
-                        background: 'rgba(10, 12, 22, 0.96)',
-                        backdropFilter: 'blur(16px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        maxHeight: '260px',
-                        overflowY: 'auto',
-                        zIndex: 100,
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                        width: '100%',
+                        cursor: 'pointer',
+                        fontSize: '0.88rem',
                         display: 'flex',
-                        flexDirection: 'column'
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 14px',
+                        background: 'rgba(255,255,255,0.02)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        textAlign: 'left'
                       }}
                     >
-                      {/* Search Bar */}
-                      <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
-                        <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
-                        <input
-                          type="text"
-                          placeholder="Search cryptocurrency..."
-                          value={searchQueryFrom}
-                          onChange={(e) => setSearchQueryFrom(e.target.value)}
-                          className="glass-input"
-                          style={{
-                            flex: 1,
-                            fontSize: '0.8rem',
-                            padding: '4px 8px',
-                            background: 'rgba(255,255,255,0.02)',
-                            border: 'none',
-                            outline: 'none'
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </div>
-                      
-                      {/* Scrollable list */}
-                      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
-                        {Object.keys(cryptoDetails)
-                          .filter(c => {
-                            const details = cryptoDetails[c];
-                            const query = searchQueryFrom.toLowerCase();
-                            if (!query) return true;
-                            if (c.toLowerCase().includes(query)) return true;
-                            if (details) {
-                              return details.name.toLowerCase().includes(query);
-                            }
-                            return false;
-                          })
-                          .map(c => {
-                            const isSel = cryptoFrom === c;
-                            const details = cryptoDetails[c];
-                            return (
-                              <button
-                                key={c}
-                                onClick={() => {
-                                  setCryptoFrom(c);
-                                  setIsOpenFrom(false);
-                                  setSearchQueryFrom('');
-                                }}
-                                style={{
-                                  padding: '8px 12px',
-                                  background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-                                  border: 'none',
-                                  color: isSel ? accentColor : '#fff',
-                                  fontSize: '0.82rem',
-                                  textAlign: 'left',
-                                  cursor: 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'space-between',
-                                  transition: 'all var(--transition-fast)'
-                                }}
-                                className="btn-glow"
-                              >
-                                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                                  {getCryptoDisplayName(c)}
-                                </span>
-                                {details && (
-                                  <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                                    {details.symbol}
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {getCryptoDisplayName(cryptoFrom)}
+                      </span>
+                      <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
+                    </button>
+
+                    {isOpenFrom && (
+                      <div
+                        className="glass-panel"
+                        style={{
+                          position: 'absolute',
+                          top: '100%',
+                          left: 0,
+                          right: 0,
+                          marginTop: '6px',
+                          background: 'rgba(10, 12, 22, 0.96)',
+                          backdropFilter: 'blur(16px)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '12px',
+                          maxHeight: '260px',
+                          overflowY: 'auto',
+                          zIndex: 100,
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        {/* Search Bar */}
+                        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
+                          <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
+                          <input
+                            type="text"
+                            placeholder="Search cryptocurrency..."
+                            value={searchQueryFrom}
+                            onChange={(e) => setSearchQueryFrom(e.target.value)}
+                            className="glass-input"
+                            style={{
+                              flex: 1,
+                              fontSize: '0.8rem',
+                              padding: '4px 8px',
+                              background: 'rgba(255,255,255,0.02)',
+                              border: 'none',
+                              outline: 'none'
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </div>
+
+                        {/* Scrollable list */}
+                        <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
+                          {Object.keys(cryptoDetails)
+                            .filter(c => {
+                              const details = cryptoDetails[c];
+                              const query = searchQueryFrom.toLowerCase();
+                              if (!query) return true;
+                              if (c.toLowerCase().includes(query)) return true;
+                              if (details) {
+                                return details.name.toLowerCase().includes(query);
+                              }
+                              return false;
+                            })
+                            .map(c => {
+                              const isSel = cryptoFrom === c;
+                              const details = cryptoDetails[c];
+                              return (
+                                <button
+                                  key={c}
+                                  onClick={() => {
+                                    setCryptoFrom(c);
+                                    setIsOpenFrom(false);
+                                    setSearchQueryFrom('');
+                                  }}
+                                  style={{
+                                    padding: '8px 12px',
+                                    background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                                    border: 'none',
+                                    color: isSel ? accentColor : '#fff',
+                                    fontSize: '0.82rem',
+                                    textAlign: 'left',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    transition: 'all var(--transition-fast)'
+                                  }}
+                                  className="btn-glow"
+                                >
+                                  <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                    {getCryptoDisplayName(c)}
                                   </span>
-                                )}
-                              </button>
-                            );
-                          })}
+                                  {details && (
+                                    <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                      {details.symbol}
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ) : activeCategory === 'temperature' ? (
-                <select
-                  value={tempFrom}
-                  onChange={(e) => setTempFrom(e.target.value)}
-                  className="glass-input"
-                  style={{ width: '100%', cursor: 'pointer', fontSize: '0.88rem' }}
-                >
-                  <option value="C" style={{ background: '#0a0c16', color: '#fff' }}>Celsius (°C)</option>
-                  <option value="F" style={{ background: '#0a0c16', color: '#fff' }}>Fahrenheit (°F)</option>
-                  <option value="K" style={{ background: '#0a0c16', color: '#fff' }}>Kelvin (K)</option>
-                </select>
-              ) : (
-                <select
-                  value={unitFromIndex}
-                  onChange={(e) => setUnitFromIndex(parseInt(e.target.value))}
-                  className="glass-input"
-                  style={{ width: '100%', cursor: 'pointer', fontSize: '0.88rem' }}
-                >
-                  {converterUnits[activeCategory]?.units.map((unit, idx) => (
-                    <option key={unit.name} value={idx} style={{ background: '#0a0c16', color: '#fff' }}>{unit.name}</option>
-                  ))}
-                </select>
-              )}
-            </div>
+                    )}
+                  </div>
+                ) : activeCategory === 'temperature' ? (
+                  <select
+                    value={tempFrom}
+                    onChange={(e) => setTempFrom(e.target.value)}
+                    className="glass-input"
+                    style={{ width: '100%', cursor: 'pointer', fontSize: '0.88rem' }}
+                  >
+                    <option value="C" style={{ background: '#0a0c16', color: '#fff' }}>Celsius (°C)</option>
+                    <option value="F" style={{ background: '#0a0c16', color: '#fff' }}>Fahrenheit (°F)</option>
+                    <option value="K" style={{ background: '#0a0c16', color: '#fff' }}>Kelvin (K)</option>
+                  </select>
+                ) : (
+                  <select
+                    value={unitFromIndex}
+                    onChange={(e) => setUnitFromIndex(parseInt(e.target.value))}
+                    className="glass-input"
+                    style={{ width: '100%', cursor: 'pointer', fontSize: '0.88rem' }}
+                  >
+                    {converterUnits[activeCategory]?.units.map((unit, idx) => (
+                      <option key={unit.name} value={idx} style={{ background: '#0a0c16', color: '#fff' }}>{unit.name}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
 
-            {/* SWAP BUTTON */}
-            <button
-              onClick={swapUnits}
-              className="btn-glow flex-center"
-              style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid var(--border-color)',
-                cursor: 'pointer',
-                transition: 'all var(--transition-fast)',
-                alignSelf: 'center'
-              }}
-              title="Swap units"
-            >
-              <ArrowLeftRight size={16} style={{ color: accentColor }} />
-            </button>
-
-            {/* TO panel */}
-            <div 
-              className="glass-panel"
-              style={{
-                padding: '20px',
-                background: 'rgba(5, 7, 12, 0.4)',
-                border: '1px solid rgba(255,255,255,0.04)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px'
-              }}
-            >
-              <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', fontWeight: 600 }}>Convert To</span>
-              
-              {/* Numeric input */}
-              <input
-                type="number"
-                value={valTo}
-                onChange={(e) => handleInputChange(e.target.value, 'to')}
-                className="glass-input math-mono"
+              {/* SWAP BUTTON */}
+              <button
+                onClick={swapUnits}
+                className="btn-glow flex-center"
                 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 600,
-                  width: '100%',
-                  padding: '8px 12px'
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid var(--border-color)',
+                  cursor: 'pointer',
+                  transition: 'all var(--transition-fast)',
+                  alignSelf: 'center',
+                  justifySelf: 'center',
+                  margin: '0 auto'
                 }}
-              />
+                title="Swap units"
+              >
+                <ArrowLeftRight size={16} style={{ color: accentColor }} />
+              </button>
 
-              {/* Selector according to category */}
-              {activeCategory === 'currency' ? (
-                <div ref={dropdownToRef} style={{ position: 'relative', width: '100%' }}>
-                  <button
-                    onClick={() => setIsOpenTo(!isOpenTo)}
-                    className="glass-input"
-                    style={{
-                      width: '100%',
-                      cursor: 'pointer',
-                      fontSize: '0.88rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '10px 14px',
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      textAlign: 'left'
-                    }}
-                  >
-                    <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                      {getDisplayName(curTo)}
-                    </span>
-                    <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
-                  </button>
-                  
-                  {isOpenTo && (
-                    <div
-                      className="glass-panel"
+              {/* TO panel */}
+              <div
+                className="glass-panel"
+                style={{
+                  padding: '20px',
+                  background: 'rgba(5, 7, 12, 0.4)',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
+                }}
+              >
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', fontWeight: 600 }}>Convert To</span>
+
+                {/* Numeric input */}
+                <input
+                  type="number"
+                  value={valTo}
+                  onChange={(e) => handleInputChange(e.target.value, 'to')}
+                  className="glass-input math-mono"
+                  style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 600,
+                    width: '100%',
+                    padding: '8px 12px'
+                  }}
+                />
+
+                {/* Selector according to category */}
+                {activeCategory === 'currency' ? (
+                  <div ref={dropdownToRef} style={{ position: 'relative', width: '100%' }}>
+                    <button
+                      onClick={() => setIsOpenTo(!isOpenTo)}
+                      className="glass-input"
                       style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        marginTop: '6px',
-                        background: 'rgba(10, 12, 22, 0.96)',
-                        backdropFilter: 'blur(16px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        maxHeight: '260px',
-                        overflowY: 'auto',
-                        zIndex: 100,
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                        width: '100%',
+                        cursor: 'pointer',
+                        fontSize: '0.88rem',
                         display: 'flex',
-                        flexDirection: 'column'
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 14px',
+                        background: 'rgba(255,255,255,0.02)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        textAlign: 'left'
                       }}
                     >
-                      {/* Search Bar */}
-                      <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
-                        <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
-                        <input
-                          type="text"
-                          placeholder="Search currency or country..."
-                          value={searchQueryTo}
-                          onChange={(e) => setSearchQueryTo(e.target.value)}
-                          className="glass-input"
-                          style={{
-                            flex: 1,
-                            fontSize: '0.8rem',
-                            padding: '4px 8px',
-                            background: 'rgba(255,255,255,0.02)',
-                            border: 'none',
-                            outline: 'none'
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </div>
-                      
-                      {/* Scrollable list */}
-                      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
-                        {Object.keys(currencyRates)
-                          .filter(c => currencyDetails[c] !== undefined)
-                          .filter(c => {
-                            const details = currencyDetails[c];
-                            const query = searchQueryTo.toLowerCase();
-                            if (!query) return true;
-                            if (c.toLowerCase().includes(query)) return true;
-                            if (details) {
-                              return details.country.toLowerCase().includes(query) || details.name.toLowerCase().includes(query);
-                            }
-                            return false;
-                          })
-                          .map(c => {
-                            const isSel = curTo === c;
-                            const details = currencyDetails[c];
-                            return (
-                              <button
-                                key={c}
-                                onClick={() => {
-                                  setCurTo(c);
-                                  setIsOpenTo(false);
-                                  setSearchQueryTo('');
-                                }}
-                                style={{
-                                  padding: '8px 12px',
-                                  background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-                                  border: 'none',
-                                  color: isSel ? accentColor : '#fff',
-                                  fontSize: '0.82rem',
-                                  textAlign: 'left',
-                                  cursor: 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'space-between',
-                                  transition: 'all var(--transition-fast)'
-                                }}
-                                className="btn-glow"
-                              >
-                                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                                  {getDisplayName(c)}
-                                </span>
-                                {details && (
-                                  <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                                    {details.symbol}
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {getDisplayName(curTo)}
+                      </span>
+                      <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
+                    </button>
+
+                    {isOpenTo && (
+                      <div
+                        className="glass-panel"
+                        style={{
+                          position: 'absolute',
+                          top: '100%',
+                          left: 0,
+                          right: 0,
+                          marginTop: '6px',
+                          background: 'rgba(10, 12, 22, 0.96)',
+                          backdropFilter: 'blur(16px)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '12px',
+                          maxHeight: '260px',
+                          overflowY: 'auto',
+                          zIndex: 100,
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        {/* Search Bar */}
+                        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
+                          <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
+                          <input
+                            type="text"
+                            placeholder="Search currency or country..."
+                            value={searchQueryTo}
+                            onChange={(e) => setSearchQueryTo(e.target.value)}
+                            className="glass-input"
+                            style={{
+                              flex: 1,
+                              fontSize: '0.8rem',
+                              padding: '4px 8px',
+                              background: 'rgba(255,255,255,0.02)',
+                              border: 'none',
+                              outline: 'none'
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </div>
+
+                        {/* Scrollable list */}
+                        <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
+                          {Object.keys(currencyRates)
+                            .filter(c => currencyDetails[c] !== undefined)
+                            .filter(c => {
+                              const details = currencyDetails[c];
+                              const query = searchQueryTo.toLowerCase();
+                              if (!query) return true;
+                              if (c.toLowerCase().includes(query)) return true;
+                              if (details) {
+                                return details.country.toLowerCase().includes(query) || details.name.toLowerCase().includes(query);
+                              }
+                              return false;
+                            })
+                            .map(c => {
+                              const isSel = curTo === c;
+                              const details = currencyDetails[c];
+                              return (
+                                <button
+                                  key={c}
+                                  onClick={() => {
+                                    setCurTo(c);
+                                    setIsOpenTo(false);
+                                    setSearchQueryTo('');
+                                  }}
+                                  style={{
+                                    padding: '8px 12px',
+                                    background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                                    border: 'none',
+                                    color: isSel ? accentColor : '#fff',
+                                    fontSize: '0.82rem',
+                                    textAlign: 'left',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    transition: 'all var(--transition-fast)'
+                                  }}
+                                  className="btn-glow"
+                                >
+                                  <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                    {getDisplayName(c)}
                                   </span>
-                                )}
-                              </button>
-                            );
-                          })}
+                                  {details && (
+                                    <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                      {details.symbol}
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ) : activeCategory === 'crypto' ? (
-                <div ref={dropdownToRef} style={{ position: 'relative', width: '100%' }}>
-                  <button
-                    onClick={() => setIsOpenTo(!isOpenTo)}
-                    className="glass-input"
-                    style={{
-                      width: '100%',
-                      cursor: 'pointer',
-                      fontSize: '0.88rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '10px 14px',
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      textAlign: 'left'
-                    }}
-                  >
-                    <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                      {getCryptoDisplayName(cryptoTo)}
-                    </span>
-                    <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
-                  </button>
-                  
-                  {isOpenTo && (
-                    <div
-                      className="glass-panel"
+                    )}
+                  </div>
+                ) : activeCategory === 'crypto' ? (
+                  <div ref={dropdownToRef} style={{ position: 'relative', width: '100%' }}>
+                    <button
+                      onClick={() => setIsOpenTo(!isOpenTo)}
+                      className="glass-input"
                       style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        marginTop: '6px',
-                        background: 'rgba(10, 12, 22, 0.96)',
-                        backdropFilter: 'blur(16px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        maxHeight: '260px',
-                        overflowY: 'auto',
-                        zIndex: 100,
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                        width: '100%',
+                        cursor: 'pointer',
+                        fontSize: '0.88rem',
                         display: 'flex',
-                        flexDirection: 'column'
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '10px 14px',
+                        background: 'rgba(255,255,255,0.02)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        textAlign: 'left'
                       }}
                     >
-                      {/* Search Bar */}
-                      <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
-                        <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
-                        <input
-                          type="text"
-                          placeholder="Search cryptocurrency..."
-                          value={searchQueryTo}
-                          onChange={(e) => setSearchQueryTo(e.target.value)}
-                          className="glass-input"
-                          style={{
-                            flex: 1,
-                            fontSize: '0.8rem',
-                            padding: '4px 8px',
-                            background: 'rgba(255,255,255,0.02)',
-                            border: 'none',
-                            outline: 'none'
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </div>
-                      
-                      {/* Scrollable list */}
-                      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
-                        {Object.keys(cryptoDetails)
-                          .filter(c => {
-                            const details = cryptoDetails[c];
-                            const query = searchQueryTo.toLowerCase();
-                            if (!query) return true;
-                            if (c.toLowerCase().includes(query)) return true;
-                            if (details) {
-                              return details.name.toLowerCase().includes(query);
-                            }
-                            return false;
-                          })
-                          .map(c => {
-                            const isSel = cryptoTo === c;
-                            const details = cryptoDetails[c];
-                            return (
-                              <button
-                                key={c}
-                                onClick={() => {
-                                  setCryptoTo(c);
-                                  setIsOpenTo(false);
-                                  setSearchQueryTo('');
-                                }}
-                                style={{
-                                  padding: '8px 12px',
-                                  background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-                                  border: 'none',
-                                  color: isSel ? accentColor : '#fff',
-                                  fontSize: '0.82rem',
-                                  textAlign: 'left',
-                                  cursor: 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'space-between',
-                                  transition: 'all var(--transition-fast)'
-                                }}
-                                className="btn-glow"
-                              >
-                                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                                  {getCryptoDisplayName(c)}
-                                </span>
-                                {details && (
-                                  <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                                    {details.symbol}
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {getCryptoDisplayName(cryptoTo)}
+                      </span>
+                      <ChevronDown size={16} style={{ color: accentColor, opacity: 0.8 }} />
+                    </button>
+
+                    {isOpenTo && (
+                      <div
+                        className="glass-panel"
+                        style={{
+                          position: 'absolute',
+                          top: '100%',
+                          left: 0,
+                          right: 0,
+                          marginTop: '6px',
+                          background: 'rgba(10, 12, 22, 0.96)',
+                          backdropFilter: 'blur(16px)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '12px',
+                          maxHeight: '260px',
+                          overflowY: 'auto',
+                          zIndex: 100,
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        {/* Search Bar */}
+                        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', borderBottom: '1px solid rgba(255,255,255,0.05)', position: 'sticky', top: 0, background: 'rgba(10, 12, 22, 0.98)', zIndex: 1 }}>
+                          <Search size={14} style={{ color: 'var(--text-muted)', marginRight: '6px' }} />
+                          <input
+                            type="text"
+                            placeholder="Search cryptocurrency..."
+                            value={searchQueryTo}
+                            onChange={(e) => setSearchQueryTo(e.target.value)}
+                            className="glass-input"
+                            style={{
+                              flex: 1,
+                              fontSize: '0.8rem',
+                              padding: '4px 8px',
+                              background: 'rgba(255,255,255,0.02)',
+                              border: 'none',
+                              outline: 'none'
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </div>
+
+                        {/* Scrollable list */}
+                        <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', flex: 1 }}>
+                          {Object.keys(cryptoDetails)
+                            .filter(c => {
+                              const details = cryptoDetails[c];
+                              const query = searchQueryTo.toLowerCase();
+                              if (!query) return true;
+                              if (c.toLowerCase().includes(query)) return true;
+                              if (details) {
+                                return details.name.toLowerCase().includes(query);
+                              }
+                              return false;
+                            })
+                            .map(c => {
+                              const isSel = cryptoTo === c;
+                              const details = cryptoDetails[c];
+                              return (
+                                <button
+                                  key={c}
+                                  onClick={() => {
+                                    setCryptoTo(c);
+                                    setIsOpenTo(false);
+                                    setSearchQueryTo('');
+                                  }}
+                                  style={{
+                                    padding: '8px 12px',
+                                    background: isSel ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                                    border: 'none',
+                                    color: isSel ? accentColor : '#fff',
+                                    fontSize: '0.82rem',
+                                    textAlign: 'left',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    transition: 'all var(--transition-fast)'
+                                  }}
+                                  className="btn-glow"
+                                >
+                                  <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                    {getCryptoDisplayName(c)}
                                   </span>
-                                )}
-                              </button>
-                            );
-                          })}
+                                  {details && (
+                                    <span style={{ fontSize: '0.78rem', color: isSel ? accentColor : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                      {details.symbol}
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ) : activeCategory === 'temperature' ? (
-                <select
-                  value={tempTo}
-                  onChange={(e) => setTempTo(e.target.value)}
-                  className="glass-input"
-                  style={{ width: '100%', cursor: 'pointer', fontSize: '0.88rem' }}
-                >
-                  <option value="C" style={{ background: '#0a0c16', color: '#fff' }}>Celsius (°C)</option>
-                  <option value="F" style={{ background: '#0a0c16', color: '#fff' }}>Fahrenheit (°F)</option>
-                  <option value="K" style={{ background: '#0a0c16', color: '#fff' }}>Kelvin (K)</option>
-                </select>
-              ) : (
-                <select
-                  value={unitToIndex}
-                  onChange={(e) => setUnitToIndex(parseInt(e.target.value))}
-                  className="glass-input"
-                  style={{ width: '100%', cursor: 'pointer', fontSize: '0.88rem' }}
-                >
-                  {converterUnits[activeCategory]?.units.map((unit, idx) => (
-                    <option key={unit.name} value={idx} style={{ background: '#0a0c16', color: '#fff' }}>{unit.name}</option>
-                  ))}
-                </select>
-              )}
+                    )}
+                  </div>
+                ) : activeCategory === 'temperature' ? (
+                  <select
+                    value={tempTo}
+                    onChange={(e) => setTempTo(e.target.value)}
+                    className="glass-input"
+                    style={{ width: '100%', cursor: 'pointer', fontSize: '0.88rem' }}
+                  >
+                    <option value="C" style={{ background: '#0a0c16', color: '#fff' }}>Celsius (°C)</option>
+                    <option value="F" style={{ background: '#0a0c16', color: '#fff' }}>Fahrenheit (°F)</option>
+                    <option value="K" style={{ background: '#0a0c16', color: '#fff' }}>Kelvin (K)</option>
+                  </select>
+                ) : (
+                  <select
+                    value={unitToIndex}
+                    onChange={(e) => setUnitToIndex(parseInt(e.target.value))}
+                    className="glass-input"
+                    style={{ width: '100%', cursor: 'pointer', fontSize: '0.88rem' }}
+                  >
+                    {converterUnits[activeCategory]?.units.map((unit, idx) => (
+                      <option key={unit.name} value={idx} style={{ background: '#0a0c16', color: '#fff' }}>{unit.name}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
             </div>
-          </div>
           )}
 
           {/* Currency loading states / instructions */}
           {activeCategory === 'currency' && (
-            <div 
+            <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',

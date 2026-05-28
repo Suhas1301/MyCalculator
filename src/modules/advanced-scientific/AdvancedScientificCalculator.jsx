@@ -651,7 +651,7 @@ export default function AdvancedScientificCalculator() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Advanced Math Suite</h2>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Powered by math.js for complex algebraic computations</p>
+
         </div>
       </div>
 

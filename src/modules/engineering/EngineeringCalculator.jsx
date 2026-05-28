@@ -77,7 +77,7 @@ export default function EngineeringCalculator() {
       {/* Title */}
       <div>
         <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Engineering & Physics Lab</h2>
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Interactive visual resistor color code decoder</p>
+
       </div>
 
       {/* Main computational layouts */}

@@ -160,7 +160,7 @@ export default function HealthCalculator() {
       {/* Title */}
       <div>
         <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Health & Fitness Lab</h2>
-        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>Basal metabolic rate formulas and body mass composition indexes</p>
+
       </div>
 
       {/* Select Tab */}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { evaluateExpression } from '../../utils/mathParser';
-import { History, Trash2, ArrowLeft, Bookmark, BookOpen, X, Search } from 'lucide-react';
+import { History, Trash2, ArrowLeft, Bookmark, BookOpen, X, Search, Calculator, FlaskConical, Delete, ArrowLeftRight } from 'lucide-react';
 
 const CONSTANT_GROUPS = [
   {
@@ -164,7 +164,7 @@ function ConstantRow({ constant, onSelect, query }) {
         >
           {constant.id}
         </span>
-        
+
         {/* Symbol and Description */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1, overflow: 'hidden' }}>
           <div style={{ width: '48px', flexShrink: 0 }}>
@@ -182,7 +182,7 @@ function ConstantRow({ constant, onSelect, query }) {
           </div>
         </div>
       </div>
-      
+
       {/* Insertable Alias Badge */}
       <div style={{ textAlign: 'right', marginLeft: '8px', flexShrink: 0 }}>
         <span
@@ -219,9 +219,13 @@ export default function BasicCalculator() {
   const [mobilePage, setMobilePage] = useState(1);
   const [selectedGroup, setSelectedGroup] = useState('All');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  
+  const [isLandscape, setIsLandscape] = useState(window.innerWidth > window.innerHeight);
+
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsLandscape(window.innerWidth > window.innerHeight);
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -242,7 +246,7 @@ export default function BasicCalculator() {
     }
     const start = inputRef.current.selectionStart || 0;
     const end = inputRef.current.selectionEnd || 0;
-    
+
     setExpression(prev => {
       const updated = prev.slice(0, start) + value + prev.slice(end);
       setTimeout(() => {
@@ -262,7 +266,7 @@ export default function BasicCalculator() {
     }
     const start = inputRef.current.selectionStart || 0;
     const end = inputRef.current.selectionEnd || 0;
-    
+
     if (start !== end) {
       setExpression(prev => {
         const updated = prev.slice(0, start) + prev.slice(end);
@@ -282,9 +286,9 @@ export default function BasicCalculator() {
     setExpression(prev => {
       const textBefore = prev.slice(0, start);
       const textAfter = prev.slice(start);
-      
+
       const tokens = ['sin(', 'cos(', 'tan(', 'asin(', 'acos(', 'atan(', 'sinh(', 'cosh(', 'tanh(', 'ln(', 'log10(', 'sqrt(', 'abs(', 'exp(', '10^('];
-      
+
       let deletedLen = 1;
       for (const token of tokens) {
         if (textBefore.endsWith(token)) {
@@ -292,10 +296,10 @@ export default function BasicCalculator() {
           break;
         }
       }
-      
+
       const updated = textBefore.slice(0, -deletedLen) + textAfter;
       const newPos = start - deletedLen;
-      
+
       setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.selectionStart = inputRef.current.selectionEnd = newPos;
@@ -306,6 +310,17 @@ export default function BasicCalculator() {
     });
   };
 
+  const getEvaluatableExpression = (expr) => {
+    let sanitized = expr.trim();
+    if (!sanitized) return '';
+    const openCount = (sanitized.match(/\(/g) || []).length;
+    const closeCount = (sanitized.match(/\)/g) || []).length;
+    if (openCount > closeCount) {
+      sanitized += ')'.repeat(openCount - closeCount);
+    }
+    return sanitized;
+  };
+
   // Evaluate expression in real-time as the user types
   useEffect(() => {
     if (!expression.trim()) {
@@ -313,10 +328,9 @@ export default function BasicCalculator() {
       setError('');
       return;
     }
-    
-    // Quick sanitization check to prevent incomplete trailing operator crashes
-    const sanitized = expression.trim();
-    if (/[+\-*/%^!(]$/.test(sanitized)) {
+
+    const sanitized = getEvaluatableExpression(expression);
+    if (/[+\-*/%^!(]$/.test(sanitized.trim())) {
       setLivePreview('');
       return;
     }
@@ -341,7 +355,7 @@ export default function BasicCalculator() {
 
   const handleKeyPress = (value) => {
     setError('');
-    
+
     if (value === 'AC') {
       setExpression('');
       setLivePreview('');
@@ -358,7 +372,8 @@ export default function BasicCalculator() {
   const handleCalculate = () => {
     if (!expression.trim()) return;
     try {
-      const res = evaluateExpression(expression, {}, settings.angleMode);
+      const sanitized = getEvaluatableExpression(expression);
+      const res = evaluateExpression(sanitized, {}, settings.angleMode);
       if (isNaN(res)) {
         setError('Invalid expression');
       } else {
@@ -386,7 +401,7 @@ export default function BasicCalculator() {
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
         return;
       }
-      
+
       const key = e.key;
       if (/\d/.test(key) || '+-*/().!^%'.includes(key)) {
         e.preventDefault();
@@ -402,63 +417,63 @@ export default function BasicCalculator() {
         handleKeyPress('AC');
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [expression, settings.angleMode]);
 
   const buttons = [
-    { label: 'AC', type: 'clear', action: () => handleKeyPress('AC') },
-    { label: '(', type: 'paren', action: () => handleKeyPress('(') },
-    { label: ')', type: 'paren', action: () => handleKeyPress(')') },
-    { label: 'DEL', type: 'delete', action: () => handleKeyPress('DEL') },
-    
+    { label: 'C', type: 'clear', action: () => handleKeyPress('AC') },
+    { label: <Delete size={20} />, type: 'delete', action: () => handleKeyPress('DEL') },
+    { label: '%', type: 'op', action: () => handleKeyPress('%') },
+    { label: '÷', type: 'op', action: () => handleKeyPress('/') },
+
     { label: '7', type: 'num', action: () => handleKeyPress('7') },
     { label: '8', type: 'num', action: () => handleKeyPress('8') },
     { label: '9', type: 'num', action: () => handleKeyPress('9') },
-    { label: '÷', type: 'op', action: () => handleKeyPress('/') },
-    
+    { label: '×', type: 'op', action: () => handleKeyPress('*') },
+
     { label: '4', type: 'num', action: () => handleKeyPress('4') },
     { label: '5', type: 'num', action: () => handleKeyPress('5') },
     { label: '6', type: 'num', action: () => handleKeyPress('6') },
-    { label: '×', type: 'op', action: () => handleKeyPress('*') },
-    
+    { label: '−', type: 'op', action: () => handleKeyPress('-') },
+
     { label: '1', type: 'num', action: () => handleKeyPress('1') },
     { label: '2', type: 'num', action: () => handleKeyPress('2') },
     { label: '3', type: 'num', action: () => handleKeyPress('3') },
-    { label: '−', type: 'op', action: () => handleKeyPress('-') },
-    
+    { label: '+', type: 'op', action: () => handleKeyPress('+') },
+
+    { label: '( )', type: 'paren', action: () => {
+        const openCount = (expression.match(/\(/g) || []).length;
+        const closeCount = (expression.match(/\)/g) || []).length;
+        if (openCount > closeCount) handleKeyPress(')');
+        else handleKeyPress('(');
+    }},
     { label: '0', type: 'num', action: () => handleKeyPress('0') },
     { label: '.', type: 'num', action: () => handleKeyPress('.') },
     { label: '=', type: 'equals', action: () => handleKeyPress('=') },
-    { label: '+', type: 'op', action: () => handleKeyPress('+') },
   ];
 
   const scientificButtons = [
+    { label: <ArrowLeftRight size={18} />, action: () => { /* Future swap functionality */ } },
+    { label: settings.angleMode === 'deg' ? 'Deg' : 'Rad', action: () => updateSetting('angleMode', settings.angleMode === 'deg' ? 'rad' : 'deg') },
+    { label: '√', action: () => handleKeyPress('sqrt(') },
+    { label: '|x|', action: () => handleKeyPress('abs(') },
+
     { label: 'sin', action: () => handleKeyPress('sin(') },
     { label: 'cos', action: () => handleKeyPress('cos(') },
     { label: 'tan', action: () => handleKeyPress('tan(') },
-    { label: 'x^y', action: () => handleKeyPress('^') },
-    
-    { label: 'asin', action: () => handleKeyPress('asin(') },
-    { label: 'acos', action: () => handleKeyPress('acos(') },
-    { label: 'atan', action: () => handleKeyPress('atan(') },
-    { label: 'sqrt', action: () => handleKeyPress('sqrt(') },
-    
-    { label: 'sinh', action: () => handleKeyPress('sinh(') },
-    { label: 'cosh', action: () => handleKeyPress('cosh(') },
-    { label: 'tanh', action: () => handleKeyPress('tanh(') },
-    { label: 'exp', action: () => handleKeyPress('exp(') },
-    
+    { label: 'π', action: () => handleKeyPress('pi') },
+
     { label: 'ln', action: () => handleKeyPress('ln(') },
     { label: 'log', action: () => handleKeyPress('log10(') },
-    { label: 'x!', action: () => handleKeyPress('!') },
-    { label: 'mod', action: () => handleKeyPress('%') },
-    
-    { label: 'π', action: () => handleKeyPress('pi') },
+    { label: '1/x', action: () => handleKeyPress('1/(') },
     { label: 'e', action: () => handleKeyPress('e') },
-    { label: '10^x', action: () => handleKeyPress('10^(') },
-    { label: 'abs', action: () => handleKeyPress('abs(') }
+
+    { label: 'e^x', action: () => handleKeyPress('exp(') },
+    { label: 'x²', action: () => handleKeyPress('^2') },
+    { label: 'x^y', action: () => handleKeyPress('^') },
+    { label: '+/–', action: () => handleKeyPress('-') }
   ];
 
   const constants = [
@@ -472,7 +487,7 @@ export default function BasicCalculator() {
   ];
 
   return (
-    <div 
+    <div
       className="animate-slide"
       style={{
         display: 'flex',
@@ -486,67 +501,75 @@ export default function BasicCalculator() {
       {/* Top Banner Options */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Scientific Engine</h2>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>High-precision scientific parsing & calculation</p>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: '#fff' }}>Scientific</h2>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button
             onClick={() => { setShowScientific(!showScientific); }}
             style={{
-              padding: '6px 12px',
-              fontSize: '0.75rem',
-              fontWeight: 600,
-              borderRadius: '6px',
+              padding: '6px',
+              borderRadius: '8px',
               border: `1px solid ${showScientific ? accentColor : 'var(--border-color)'}`,
               background: showScientific ? 'rgba(0, 240, 255, 0.05)' : 'transparent',
               color: showScientific ? accentColor : 'var(--text-secondary)',
               cursor: 'pointer',
-              transition: 'all var(--transition-fast)'
+              transition: 'all var(--transition-fast)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px'
             }}
+            title={showScientific ? "Switch to Basic Mode" : "Switch to Scientific Mode"}
           >
-            SCIENTIFIC PAD
+            {showScientific ? <Calculator size={18} /> : <FlaskConical size={18} />}
           </button>
 
-          {showScientific && (
-            <button
-              onClick={() => { setShowBookModal(true); }}
-              style={{
-                padding: '6px 12px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                borderRadius: '6px',
-                border: `1px solid ${accentColor}`,
-                background: 'rgba(0, 240, 255, 0.05)',
-                color: accentColor,
-                cursor: 'pointer',
-                transition: 'all var(--transition-fast)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-              className="btn-glow"
-              title="Open Scientific Constants Reference Book"
-            >
-              <BookOpen size={14} />
-              CONSTANTS
-            </button>
-          )}
+          <button
+            onClick={() => { setShowBookModal(true); }}
+            style={{
+              padding: '6px',
+              borderRadius: '8px',
+              border: `1px solid ${accentColor}`,
+              background: 'rgba(0, 240, 255, 0.05)',
+              color: accentColor,
+              cursor: 'pointer',
+              transition: 'all var(--transition-fast)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px'
+            }}
+            className="btn-glow"
+            title="Open Scientific Constants Reference Book"
+          >
+            <BookOpen size={18} />
+          </button>
         </div>
       </div>
 
-      {/* Immersive Glass Screen */}
-      <div 
-        className="glass-panel"
-        style={{
-          padding: '20px',
-          borderRadius: '16px',
-          background: 'rgba(5, 7, 12, 0.7)',
-          border: '1px solid rgba(255, 255, 255, 0.06)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          justifyContent: 'center',
-          minHeight: '140px',
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+        gap: '16px',
+        minHeight: 0
+      }}>
+        {/* Immersive Glass Screen */}
+        <div
+          className="glass-panel"
+          style={{
+            flex: 'none',
+            padding: isMobile ? '8px 12px' : '20px',
+            borderRadius: '16px',
+            background: 'rgba(5, 7, 12, 0.7)',
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+            minHeight: isMobile ? '60px' : '140px',
           boxShadow: `0 0 25px rgba(0, 240, 255, 0.02), inset 0 0 15px rgba(255, 255, 255, 0.01)`,
           position: 'relative',
           overflow: 'hidden'
@@ -554,9 +577,9 @@ export default function BasicCalculator() {
       >
         {/* Glowing border indicator */}
         <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '4px', background: accentColor }} />
-        
+
         {/* Math Display Input */}
-        <input 
+        <input
           ref={inputRef}
           type="text"
           value={expression}
@@ -576,7 +599,7 @@ export default function BasicCalculator() {
           className="math-mono"
           style={{
             width: '100%',
-            fontSize: expression.length > 18 ? '1.8rem' : '2.4rem',
+            fontSize: isMobile ? (expression.length > 15 ? '1.4rem' : '1.8rem') : (expression.length > 18 ? '1.8rem' : '2.4rem'),
             fontWeight: 500,
             textAlign: 'right',
             color: '#fff',
@@ -591,10 +614,10 @@ export default function BasicCalculator() {
 
         {/* Real-time result preview or error readout */}
         {livePreview && (
-          <div 
+          <div
             className="math-mono"
             style={{
-              fontSize: '1.25rem',
+              fontSize: isMobile ? '1.05rem' : '1.25rem',
               color: 'var(--text-secondary)',
               marginTop: '4px',
               opacity: 0.75
@@ -605,7 +628,7 @@ export default function BasicCalculator() {
         )}
 
         {error && (
-          <div 
+          <div
             style={{
               fontSize: '0.8rem',
               color: 'var(--color-chemistry)',
@@ -618,29 +641,28 @@ export default function BasicCalculator() {
         )}
       </div>
 
-      {/* Main Core Layout: Keyboard Grid (Drawer removed, keypads now take full width!) */}
-      <div 
-        style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr', 
-          gap: '16px',
-          flex: 1,
-          minHeight: 0
-        }}
-      >
-        {/* Keypads layout: Side-by-side grid if scientific mode is active */}
-        <div 
-          style={{ 
-            display: 'grid', 
-            gridTemplateColumns: (showScientific && !isMobile) ? '1.1fr 1fr' : '1fr', 
-            gap: '14px',
+        {/* Main Core Layout: Keyboard Grid */}
+        <div
+          style={{
+            display: 'flex',
             flex: 1,
             minHeight: 0
           }}
         >
-          {/* Scientific buttons pad (4 columns, 5 rows - 20 buttons total) */}
+          {/* Keypads layout: Side-by-side grid if scientific mode is active */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: (showScientific && (!isMobile || isLandscape)) ? '1.1fr 1fr' : '1fr',
+              gridTemplateRows: (showScientific && isMobile && !isLandscape) ? '1fr 1fr' : '1fr',
+              gap: isMobile ? '8px' : '14px',
+              flex: 1,
+              minHeight: 0
+            }}
+          >
+          {/* Scientific buttons pad (4 columns, 4 rows) */}
           {showScientific && (
-            <div 
+            <div
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(4, 1fr)',
@@ -664,7 +686,8 @@ export default function BasicCalculator() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: '52px'
+                    minHeight: isMobile ? '38px' : '52px',
+                    height: '100%'
                   }}
                   className="btn-glow"
                 >
@@ -675,7 +698,7 @@ export default function BasicCalculator() {
           )}
 
           {/* Core Basic Layout Grid (4 columns, 5 rows) */}
-          <div 
+          <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
@@ -687,15 +710,15 @@ export default function BasicCalculator() {
               let btnBg = 'rgba(255, 255, 255, 0.02)';
               let btnColor = 'var(--text-primary)';
               let border = '1px solid rgba(255, 255, 255, 0.04)';
-              
+
               if (btn.type === 'clear') {
                 btnBg = 'rgba(255, 51, 102, 0.05)';
                 btnColor = 'var(--color-chemistry)';
                 border = '1px solid rgba(255, 51, 102, 0.15)';
               } else if (btn.type === 'delete') {
-                btnBg = 'rgba(255, 107, 0, 0.05)';
-                btnColor = 'var(--color-engineering)';
-                border = '1px solid rgba(255, 107, 0, 0.15)';
+                btnBg = 'rgba(255, 51, 102, 0.05)';
+                btnColor = 'var(--color-chemistry)';
+                border = '1px solid rgba(255, 51, 102, 0.15)';
               } else if (btn.type === 'op' || btn.type === 'paren') {
                 btnBg = 'rgba(0, 240, 255, 0.03)';
                 btnColor = accentColor;
@@ -722,7 +745,8 @@ export default function BasicCalculator() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: '52px',
+                    minHeight: isMobile ? (isLandscape ? '38px' : '45px') : '52px',
+                    height: '100%',
                     boxShadow: btn.type === 'equals' ? `0 4px 15px rgba(0, 240, 255, 0.25)` : 'none'
                   }}
                   className={btn.type === 'equals' ? undefined : 'btn-glow'}
@@ -733,6 +757,7 @@ export default function BasicCalculator() {
             })}
           </div>
         </div>
+      </div>
       </div>
 
       {/* Book-like Scientific Constants Reference Modal */}
@@ -798,7 +823,7 @@ export default function BasicCalculator() {
         };
 
         return (
-          <div 
+          <div
             style={{
               position: 'fixed',
               top: 0,
@@ -817,8 +842,8 @@ export default function BasicCalculator() {
             onClick={() => setShowBookModal(false)}
           >
             <style dangerouslySetInnerHTML={{ __html: bookStyles }} />
-            
-            <div 
+
+            <div
               style={{
                 width: '100%',
                 maxWidth: isMobile ? '100%' : '1100px',
@@ -836,7 +861,7 @@ export default function BasicCalculator() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div 
+              <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -849,21 +874,32 @@ export default function BasicCalculator() {
                 }}
               >
                 {/* Row 1: Title + Search + Close */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <BookOpen size={20} style={{ color: accentColor }} />
-                    <div>
-                      <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, color: '#fff' }}>
-                        Scientific Constants Reference Book
-                      </h3>
-                      <p style={{ fontSize: '0.68rem', color: 'var(--text-muted)', margin: 0 }}>
-                        Select a constant to insert its symbol • {ALL_CONSTANTS.length} constants in {CONSTANT_GROUPS.length} groups
-                      </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'stretch' : 'center', gap: '12px', flexDirection: isMobile ? 'column' : 'row' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <BookOpen size={20} style={{ color: accentColor }} />
+                      <div>
+                        <h3 style={{ fontSize: isMobile ? '0.95rem' : '1.05rem', fontWeight: 700, margin: 0, color: '#fff' }}>
+                          Scientific Constants
+                        </h3>
+                        <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', margin: 0 }}>
+                          {ALL_CONSTANTS.length} constants in {CONSTANT_GROUPS.length} groups
+                        </p>
+                      </div>
                     </div>
+                    {isMobile && (
+                      <button
+                        onClick={() => setShowBookModal(false)}
+                        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', cursor: 'pointer', flexShrink: 0 }}
+                        title="Close Reference Book"
+                      >
+                        <X size={15} />
+                      </button>
+                    )}
                   </div>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ position: 'relative' }}>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: isMobile ? '100%' : 'auto' }}>
+                    <div style={{ position: 'relative', flex: isMobile ? 1 : 'none' }}>
                       <Search size={13} style={{ position: 'absolute', left: '9px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                       <input
                         type="text"
@@ -877,7 +913,8 @@ export default function BasicCalculator() {
                           padding: '5px 10px 5px 28px',
                           fontSize: '0.8rem',
                           color: '#fff',
-                          width: '200px',
+                          width: isMobile ? '100%' : '200px',
+                          boxSizing: 'border-box',
                           outline: 'none',
                           transition: 'all 0.15s ease'
                         }}
@@ -889,13 +926,15 @@ export default function BasicCalculator() {
                         </button>
                       )}
                     </div>
-                    <button
-                      onClick={() => setShowBookModal(false)}
-                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', cursor: 'pointer' }}
-                      title="Close Reference Book"
-                    >
-                      <X size={15} />
-                    </button>
+                    {!isMobile && (
+                      <button
+                        onClick={() => setShowBookModal(false)}
+                        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', cursor: 'pointer', flexShrink: 0 }}
+                        title="Close Reference Book"
+                      >
+                        <X size={15} />
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -933,7 +972,7 @@ export default function BasicCalculator() {
               </div>
 
               {/* Book Pages Container */}
-              <div 
+              <div
                 style={{
                   flex: 1,
                   position: 'relative',
@@ -944,7 +983,7 @@ export default function BasicCalculator() {
               >
                 {/* Spine Crease (Desktop Only) */}
                 {!isMobile && (
-                  <div 
+                  <div
                     style={{
                       position: 'absolute',
                       left: '50%',
@@ -963,7 +1002,7 @@ export default function BasicCalculator() {
                 {/* Pages Viewport */}
                 {isMobile ? (
                   /* Mobile Single Page View */
-                  <div 
+                  <div
                     style={{
                       flex: 1,
                       display: 'flex',
@@ -983,7 +1022,7 @@ export default function BasicCalculator() {
                   /* Desktop Two Page View */
                   <>
                     {/* Left Page */}
-                    <div 
+                    <div
                       style={{
                         flex: 1,
                         overflowY: 'auto',
@@ -994,10 +1033,10 @@ export default function BasicCalculator() {
                         borderRight: '1px solid rgba(255,255,255,0.02)'
                       }}
                     >
-                      <div style={{ 
-                        fontSize: '0.72rem', 
-                        color: 'var(--text-muted)', 
-                        borderBottom: '1px solid rgba(255,255,255,0.04)', 
+                      <div style={{
+                        fontSize: '0.72rem',
+                        color: 'var(--text-muted)',
+                        borderBottom: '1px solid rgba(255,255,255,0.04)',
                         paddingBottom: '6px',
                         marginBottom: '6px',
                         display: 'flex',
@@ -1015,7 +1054,7 @@ export default function BasicCalculator() {
                     </div>
 
                     {/* Right Page */}
-                    <div 
+                    <div
                       style={{
                         flex: 1,
                         overflowY: 'auto',
@@ -1026,10 +1065,10 @@ export default function BasicCalculator() {
                         borderLeft: '1px solid rgba(0,0,0,0.3)'
                       }}
                     >
-                      <div style={{ 
-                        fontSize: '0.72rem', 
-                        color: 'var(--text-muted)', 
-                        borderBottom: '1px solid rgba(255,255,255,0.04)', 
+                      <div style={{
+                        fontSize: '0.72rem',
+                        color: 'var(--text-muted)',
+                        borderBottom: '1px solid rgba(255,255,255,0.04)',
                         paddingBottom: '6px',
                         marginBottom: '6px',
                         display: 'flex',
@@ -1050,21 +1089,21 @@ export default function BasicCalculator() {
               </div>
 
               {/* Modal Footer */}
-              <div 
+              <div
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '12px 24px',
+                  alignItems: isMobile ? 'flex-start' : 'center',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  padding: isMobile ? '12px' : '12px 24px',
                   borderTop: '1px solid rgba(255,255,255,0.06)',
                   background: 'rgba(5, 7, 12, 0.4)',
-                  flexWrap: 'wrap',
                   gap: '12px',
                   zIndex: 20
                 }}
               >
                 {/* Keep Open Toggle */}
-                <label 
+                <label
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -1090,11 +1129,13 @@ export default function BasicCalculator() {
                 </label>
 
                 {/* Symmetrical / Pagination Info */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                    Total: {filtered.length} of {ALL_CONSTANTS.length} constants
-                  </span>
-                  
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: isMobile ? '100%' : 'auto', gap: '16px' }}>
+                  {!isMobile && (
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      Total: {filtered.length} of {ALL_CONSTANTS.length} constants
+                    </span>
+                  )}
+
                   {/* Mobile Page Controls */}
                   {isMobile && mobilePageCount > 1 && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
